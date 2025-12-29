@@ -20,14 +20,18 @@ class Newpackage extends Model
         "vendor_price"
     ];
 
-    public function vendor(){
+    public function vendor()
+    {
 
 
-        return $this->belongsTo(Vendor::class,"vendor_id");
-
-
+        return $this->belongsTo(Vendor::class, "vendor_id");
 
 
     }
+
+ 
+
+
+    
 
 }

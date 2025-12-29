@@ -338,11 +338,11 @@
                 <!-- RIGHT CONTENT -->
                 <div class="col-md-6 right-side-wrapper">
                     <div class="d-flex justify-content-between toppart">
-                        <button class="btn w-50 grey_color py-3 tab-button " style="border-right:1px solid grey;">
+                        {{-- <button class="btn w-50 grey_color py-3 tab-button " style="border-right:1px solid grey;">
                             Signup
-                        </button>
+                        </button> --}}
 
-                        <button class="btn w-50 grey_color py-3 tab-button active_border">
+                        <button class="btn w-100 grey_color py-3 tab-button active_border">
                             Login
                         </button>
                     </div>
@@ -376,12 +376,12 @@
                                     </div>
                                 </div>
                                 <div class="d-flex my-3 justify-content-center">
-                                    <div class="border border-danger w-50 text-center py-2 px-2">
+                                    {{-- <div class="border border-danger w-50 text-center py-2 px-2">
                                         Sign up with google
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="my-3 d-flex justify-content-center">
-                                    <p>Don't have an account?<span style="font-weight:bold"> sign up</span></p>
+                                    <a href="{{ route('signupview') }}">Don't have an account?<span style="font-weight:bold"> sign up</span></a>
                                 </div>
                             </div>
 

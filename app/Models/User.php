@@ -42,8 +42,10 @@ class User extends Authenticatable
         'registartioncertificatepdf',
         'password',
         'bank_id',
-        
-
+        'gender',
+        'otp',
+        'dob',
+        'is_loggedin',
     ];
 
     /**

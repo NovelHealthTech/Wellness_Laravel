@@ -5,10 +5,15 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Pincode</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('retailer.srlpincode.post') }}" method="post">
+            <form action="{{ route('retailer.srlpincode.post') }}" method="post" novalidate>
                  @csrf
                 <div class="modal-body">
                     <input type="text" name="pincode" class="form-control w-50" placeholder="enter the pincode" required>
+                </div>
+
+                <div class="invalid-feedback">
+                    please enter the pincode
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary button_color book">book</button>

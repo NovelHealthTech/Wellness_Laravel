@@ -10,8 +10,13 @@
                 <form id="slotForm" action="{{ route('retailer.srlslotsubmit.post') }}" method="post">
                     @csrf
                     <input type="hidden" name="selected_slot" id="selected_slot" value="">
+                   
+                    @error("selected_slot")
+                        <span class="text-danger">Please select a slot</span>
+                    @enderror
+                    
                     <input type="hidden" name="selected_pincode" id="selected_pincode" value="">
-                     <input type="hidden" name="selected_package" id="selected_package">
+                    <input type="hidden" name="selected_package" id="selected_package">
 
                     <div id="slot-legend" style="margin-bottom: 10px;">
                         <span class="slot-indicator green"></span> Available

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Newpackage;
 use App\Models\Package;
 use App\Models\Vendor;
+use App\Models\Vendorpricenht;
 use Exception;
 use Illuminate\Cache\Repository;
 use Illuminate\Http\Request;
@@ -44,33 +45,35 @@ class PackageController extends Controller
         try {
 
             $validate = $request->validate([
-
                 "packagename" => "required|string|max:255",
-                "price" => "required|numeric|min:0",
                 "discount" => "nullable|numeric|min:0",
-                "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048", // 2MB limit
-                "package_code" => "required|string|max:100",
                 "status" => "required|boolean",
-                "vendor_id" => "required|exists:vendors,id",
-                "description" => "nullable|string|max:1000",
+                "description" => "nullable",
                 "note" => "nullable|string|max:1000",
                 "type" => "nullable|string|max:100",
-                "vendor_price" => "nullable|string|max:100",
+
             ]);
 
-            $file = $request->file("image");
+            $newpackage = Newpackage::create($validate);
+            $vedorprice = $request->vendor_price;
+            $nht_price = $request->nht_price;
+            $packagecodes = $request->package_codes;
 
-            $filepath = uploadFile($file, 'uploads');
+            foreach ($vedorprice as $key => $price) {
 
-            $validate["image"] = $filepath;
+                Vendorpricenht::create([
+                    "package_id" => $newpackage->id,
+                    "vendor_id" => $key,
+                    "package_code" => $packagecodes[$key] ?? null,
+                    "vendor_price" => $price,
+                    "nht_price" => $nht_price[$key] ?? null
+                ]);
+            }
 
-            Newpackage::create($validate);
 
-            return response()->json([
-                'status' => 'success',
-                'redirect' => route('admin.package.index'),
-                'message' => 'Package added successfully'
-            ], 200);
+            return redirect()->route('admin.package.index')->with(["status" => "success", "message" => "Package Added Successfully"]);
+
+
 
         } catch (ValidationException $e) {
 
@@ -130,7 +133,7 @@ class PackageController extends Controller
 
 
         try {
-            
+
             $package = Newpackage::findorFail($id);
 
             $validate = $request->validate([
@@ -172,15 +175,15 @@ class PackageController extends Controller
         } catch (ValidationException $e) {
 
 
-               return response()->json([
-                    
-                      "status"=>"error",
-                      "errors"=>$e->errors(),
-               ]);
-        }catch(Exception $e){
-           
             return response()->json([
-                "status"=>"error",
+
+                "status" => "error",
+                "errors" => $e->errors(),
+            ]);
+        } catch (Exception $e) {
+
+            return response()->json([
+                "status" => "error",
                 "status"
             ]);
 

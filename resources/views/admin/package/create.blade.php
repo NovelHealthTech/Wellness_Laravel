@@ -1,4 +1,5 @@
 <x-admin.header />
+
 <style>
     #imagePreviewContainer {
         animation: fadeIn 0.3s ease-in;
@@ -27,63 +28,49 @@
         transform: scale(1.02);
     }
 
-    /* Custom validation styles for select elements */
     select.is-invalid {
-        border: 1px solid #dc3545 !important;
         border-color: #dc3545 !important;
-    }
-
-    select.is-invalid:focus {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
     }
 
     select.is-valid {
         border-color: #28a745 !important;
     }
 
-    select.is-valid:focus {
-        border-color: #28a745 !important;
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
-    }
-
-    /* Force validation styles on form submission */
-    .was-validated select:invalid {
-        border: 1px solid #dc3545 !important;
-        border-color: #dc3545 !important;
-    }
-
-    .was-validated select:valid {
-        border-color: #28a745 !important;
-    }
-
     .invalid-feedback {
         display: none;
-        width: 100%;
-        margin-top: 0.25rem;
         font-size: 80%;
         color: #dc3545;
     }
 
     .was-validated select:invalid~.invalid-feedback,
-    select.is-invalid~.invalid-feedback {
-        display: block;
-    }
-
+    select.is-invalid~.invalid-feedback,
     .was-validated input:invalid~.invalid-feedback,
     input.is-invalid~.invalid-feedback {
         display: block;
     }
 
-    /* Loading spinner */
     .spinner-border-sm {
         width: 1rem;
         height: 1rem;
-        border-width: 0.2em;
+    }
+
+    .vendor-price-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        margin-top: 20px;
+    }
+
+    .vendor-price-section h5 {
+        font-weight: 600;
+        margin-bottom: 15px;
     }
 </style>
+
 <div class="main-panel">
     <div class="content-wrapper">
+
         <div class="page-header">
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
@@ -94,391 +81,170 @@
         </div>
 
         <div class="card p-5">
+
             <form id="packageform" action="{{ route('admin.package.store') }}" method="POST"
                 enctype="multipart/form-data" novalidate>
                 @csrf
+
+                {{-- BASIC DETAILS --}}
                 <div class="row">
-                  
                     <div class="col-md-6">
-                        <label class="my-2" for="packagename">Package Name</label>
-                        <input type="text" name="packagename" class="form-control" placeholder="Enter package name"
-                            required>
-                        <div class="invalid-feedback">
-                            Please enter package name.
-                        </div>
+                        <label class="my-2">Package Name</label>
+                        <input type="text" name="packagename" class="form-control" required>
+                        <div class="invalid-feedback">Please enter package name.</div>
                     </div>
 
-                    <div class="col-md-6">
-                          <label for="" class="my-2">Vendor Price</label>
-                          <input type="number" class="form-control"  name="vendor_price"  placeholder="Enter vendor price" rerquired >
-                          <div class="invalid-feedback">
-                            Please Enter the Vendor Price
-                          </div>
-                    </div>
+                    {{-- <div class="col-md-6">
+                        <label class="my-2">Package Code</label>
+                        <input type="text" name="package_code" class="form-control" required>
+                        <div class="invalid-feedback">Please enter package code.</div>
+                    </div> --}}
                 </div>
 
+                {{-- DISCOUNT --}}
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <label for="price" class="my-2">Package Price</label>
-                        <input type="number" name="price" class="form-control" placeholder="Enter package price"
-                            required>
-                        <div class="invalid-feedback">
-                            Please enter package price.
-                        </div>
+                        <label class="my-2">Discount</label>
+                        <input type="number" name="discount" class="form-control" step="0.01">
                     </div>
-                    <div class="col-md-6">
-                        <label for="discount" class="my-2">Discount</label>
-                        <input type="number" class="form-control" name="discount"
-                            placeholder="Enter the Discount amount" s>
-                        <div class="invalid-feedback">
-                            Please enter discount amount.
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row mt-3">
-                    <div class="col-md-12">
-                        <label for="image" class="my-2">Package Image</label>
-                        <input type="file" name="image" id="imageInput" class="form-control" accept="image/*"
-                            onchange="previewImage(event)" required>
-                        <small class="text-muted">Accepted formats: JPG, PNG, GIF (Max size: 2MB)</small>
-                        <div class="invalid-feedback">
-                            Please select a package image.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-3">
-                    <div class="col-md-12">
-                        <div id="imagePreviewContainer" style="display: none;">
-                            <label class="mb-2"><strong>Image Preview:</strong></label>
-                            <div class="position-relative d-inline-block">
-                                <img id="imagePreview" src="" alt="Preview" class="img-thumbnail"
-                                    style="max-width: 300px; max-height: 300px; object-fit: cover;">
-                                <button type="button" class="btn btn-danger btn-sm position-absolute"
-                                    style="top: 10px; right: 10px;" onclick="removeImage()">
-                                    <i class="mdi mdi-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-3">
                     <div class="col-md-6">
-                        <label class="my-2" for="package_code">Package code</label>
-                        <input type="text" name="package_code" class="form-control" placeholder="Enter package code"
-                            required>
-                        <div class="invalid-feedback">
-                            Please enter package code.
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="status" class="my-2">Status</label>
-                        <select class="form-control" name="status" required>
-                            <option value="" selected disabled>Select Status</option>
+                        <label class="my-2">Status</label>
+                        <select name="status" class="form-control" required>
+                            <option value="" disabled selected>Select Status</option>
                             <option value="1">Active</option>
-                            <option value="2">In-Active</option>
+                            <option value="2">Inactive</option>
                         </select>
-                        <div class="invalid-feedback">
-                            Please select a status.
+                        <div class="invalid-feedback">Please select status.</div>
+                    </div>
+                </div>
+
+               
+
+                {{-- IMAGE PREVIEW --}}
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div id="imagePreviewContainer" style="display:none;">
+                            <img id="imagePreview" class="img-thumbnail" style="max-width:300px;">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeImage()">✕</button>
                         </div>
                     </div>
                 </div>
 
+
+                {{-- package codes --}}
+
+                <div class="vendor-price-section">
+                    <h5>package codes</h5>
+                    <div class="row">
+                        @foreach ($vendors as $vendor)
+                            <div class="col-md-4 mb-3">
+                                <label>{{ $vendor->name }} code</label>
+                                <input type="text" name="package_codes[{{ $vendor->id }}]" class="form-control"
+                                    step="0.01">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+
+
+                {{-- VENDOR PRICES (NO VALIDATION) --}}
+                <div class="vendor-price-section">
+                    <h5>Individual Vendor Prices</h5>
+                    <div class="row">
+                        @foreach ($vendors as $vendor)
+                            <div class="col-md-4 mb-3">
+                                <label>{{ $vendor->name }} Price</label>
+                                <input type="number" name="vendor_price[{{ $vendor->id }}]" class="form-control"
+                                    step="0.01">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- NHT PRICES (NO VALIDATION) --}}
+                <div class="vendor-price-section">
+                    <h5>Individual NHT Prices</h5>
+                    <div class="row">
+                        @foreach ($vendors as $vendor)
+                            <div class="col-md-4 mb-3">
+                                <label>{{ $vendor->name }} NHT Price</label>
+                                <input type="number" name="nht_price[{{ $vendor->id }}]" class="form-control" step="0.01">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- DESCRIPTION --}}
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <label for="vendor_id" class="my-2">Vendor</label>
-                        <select name="vendor_id" class="form-control" required>
-                            <option value="" selected disabled>Select Vendor</option>
-                            @foreach ($vendors as $vendor)
-                                <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback">
-                            Please select a vendor.
-                        </div>
+                        <label>Description</label>
+                        <input type="text" name="description" class="form-control" required>
+                        <div class="invalid-feedback">Please enter description.</div>
                     </div>
+
                     <div class="col-md-6">
-                        <label for="description" class="my-2">Description</label>
-                        <input type="text" class="form-control" name="description" placeholder="Enter the description"
-                            required>
-                        <div class="invalid-feedback">
-                            Please enter description.
-                        </div>
+                        <label>Type</label>
+                        <input type="text" name="type" class="form-control">
                     </div>
                 </div>
 
+                {{-- NOTE --}}
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <label class="my-2" for="note">Note</label>
-                        <input type="text" class="form-control" name="note" placeholder="Enter the note" >
-                        <div class="invalid-feedback">
-                            Please enter the note.
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="my-2" for="type">Type</label>
-                        <input type="text" name="type" class="form-control" placeholder="Enter the type" >
-                        <div class="invalid-feedback">
-                            Please enter the type.
-                        </div>
+                        <label>Note</label>
+                        <input type="text" name="note" class="form-control">
                     </div>
                 </div>
 
+                {{-- BUTTONS --}}
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        <button type="submit" id="submitBtn" class="btn btn-gradient-primary me-2">
-                            <i class="mdi mdi-content-save me-1"></i> Save Package
+                        <button type="submit" id="submitBtn" class="btn btn-gradient-primary">
+                            Save Package
                         </button>
-                        <button type="button" class="btn btn-light" onclick="window.history.back()">Cancel</button>
+                        <button type="button" class="btn btn-light" onclick="history.back()">Cancel</button>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("packageform");
-        const submitBtn = document.getElementById("submitBtn");
+    const form = document.getElementById('packageform');
+    const submitBtn = document.getElementById('submitBtn');
 
-        // Real-time validation on blur for all inputs
-        form.querySelectorAll('input[required]').forEach(input => {
-            // Validate on blur (when user leaves the field)
-            input.addEventListener('blur', function () {
-                validateInput(this);
-            });
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-            // Clear validation on focus
-            input.addEventListener('focus', function () {
-                this.classList.remove('is-invalid', 'is-valid');
-            });
-
-            // Validate on input (as user types)
-            input.addEventListener('input', function () {
-                if (form.classList.contains('was-validated') || this.classList.contains('is-invalid')) {
-                    validateInput(this);
-                }
-            });
-        });
-
-        // Real-time validation on change for all selects
-        form.querySelectorAll('select[required]').forEach(select => {
-            // Validate on change
-            select.addEventListener('change', function () {
-                validateSelect(this);
-            });
-
-            // Clear validation on focus
-            select.addEventListener('focus', function () {
-                this.classList.remove('is-invalid', 'is-valid');
-            });
-
-            // Validate on blur
-            select.addEventListener('blur', function () {
-                validateSelect(this);
-            });
-        });
-
-        // Function to validate input fields
-        function validateInput(input) {
-            if (input.type === 'file') {
-                if (!input.files.length) {
-                    input.classList.add('is-invalid');
-                    input.classList.remove('is-valid');
-                    return false;
-                } else {
-                    input.classList.remove('is-invalid');
-                    input.classList.add('is-valid');
-                    return true;
-                }
-            } else {
-                if (!input.value.trim()) {
-                    input.classList.add('is-invalid');
-                    input.classList.remove('is-valid');
-                    return false;
-                } else {
-                    input.classList.remove('is-invalid');
-                    input.classList.add('is-valid');
-                    return true;
-                }
-            }
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
         }
 
-        // Function to validate select fields
-        function validateSelect(select) {
-            if (!select.value || select.value === "") {
-                select.classList.add('is-invalid');
-                select.classList.remove('is-valid');
-                return false;
-            } else {
-                select.classList.remove('is-invalid');
-                select.classList.add('is-valid');
-                return true;
-            }
-        }
-
-        // Form submission handler
-        form.addEventListener("submit", async function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            let isValid = true;
-            let firstInvalidField = null;
-
-            // Validate all select elements
-            form.querySelectorAll('select[required]').forEach(select => {
-                if (!validateSelect(select)) {
-                    isValid = false;
-                    if (!firstInvalidField) {
-                        firstInvalidField = select;
-                    }
-                }
-            });
-
-            // Validate all input elements
-            form.querySelectorAll('input[required]').forEach(input => {
-                if (!validateInput(input)) {
-                    isValid = false;
-                    if (!firstInvalidField) {
-                        firstInvalidField = input;
-                    }
-                }
-            });
-
-            form.classList.add("was-validated");
-
-            // Scroll to first invalid field and focus it
-            if (!isValid && firstInvalidField) {
-                firstInvalidField.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-
-                // Focus the field after scrolling
-                setTimeout(() => {
-                    firstInvalidField.focus();
-                }, 500);
-
-                return; // Stop form submission
-            }
-
-            // If all fields are valid, submit the form
-            if (isValid && form.checkValidity()) {
-                try {
-                    // Disable submit button
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...';
-
-                    // Create FormData object
-                    const formData = new FormData(form);
-
-                    // Get CSRF token
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                    // Send the form data
-                    const response = await fetch(form.action, {
-                        method: "POST",
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        },
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        showAlertsuccess(data);
-
-                        // Delay redirect so user can see the alert
-                        setTimeout(() => {
-                            window.location.href = data.redirect;
-                        }, 1500); // 1500ms = 1.5 seconds
-
-                        // Reset form and hide preview immediately if needed
-                        form.reset();
-                        document.getElementById('imagePreviewContainer').style.display = 'none';
-                        form.classList.remove('was-validated');
-
-
-                    } else {
-                        // Handle validation errors
-                        if (data.errors) {
-                            let errorMessage = 'Please fix the following errors:\n';
-                            Object.keys(data.errors).forEach(key => {
-                                errorMessage += `- ${data.errors[key].join(', ')}\n`;
-                            });
-                            alert(errorMessage);
-                        } else {
-                            alert(data.message || 'An error occurred while saving the package.');
-                        }
-                    }
-
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                } finally {
-                    // Re-enable submit button
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="mdi mdi-content-save me-1"></i> Save Package';
-                }
-            }
-        });
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Saving...';
+        form.submit();
     });
-</script>
 
-<script>
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const preview = document.getElementById('imagePreview');
-        const imageInput = document.getElementById('imageInput');
+    function previewImage(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-        if (file) {
-            // Check file size (2MB limit)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('File size should not exceed 2MB');
-                event.target.value = '';
-                imageInput.classList.add('is-invalid');
-                return;
-            }
-
-            // Check file type
-            if (!file.type.match('image.*')) {
-                alert('Please select a valid image file');
-                event.target.value = '';
-                imageInput.classList.add('is-invalid');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                previewContainer.style.display = 'block';
-                imageInput.classList.remove('is-invalid');
-                imageInput.classList.add('is-valid');
-            };
-            reader.readAsDataURL(file);
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            document.getElementById('imagePreview').src = reader.result;
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
     }
 
     function removeImage() {
-        const imageInput = document.getElementById('imageInput');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const preview = document.getElementById('imagePreview');
-
-        imageInput.value = '';
-        preview.src = '';
-        previewContainer.style.display = 'none';
-        imageInput.classList.remove('is-valid');
-
-        // Check if form was already validated
-        const form = document.getElementById('packageform');
-        if (form.classList.contains('was-validated')) {
-            imageInput.classList.add('is-invalid');
-        }
+        document.getElementById('imageInput').value = '';
+        document.getElementById('imagePreviewContainer').style.display = 'none';
     }
 </script>
 
