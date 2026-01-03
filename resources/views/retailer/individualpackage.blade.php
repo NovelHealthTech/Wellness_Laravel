@@ -488,7 +488,12 @@
     </div>
 </div>
 
-        <x-retailer.recliffcart   :redcliffcartitems="$redcliffitems" />
+     @if(isset($redcliffitems))
+
+     <x-retailer.recliffcart :redcliffcartitems="$redcliffitems" />
+    
+    @endif
+
 
 <script>
     function toggleTests(packageId, el) {
