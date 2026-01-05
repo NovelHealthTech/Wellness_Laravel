@@ -1,28 +1,23 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Support\Facades\View;
 
 use App\Models\Redcliffcart;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        $redcliffitems = Redcliffcart::all();
+        View::composer('retailer.individualpackage', function ($view) {
+            try {
+                $redcliffitems = Redcliffcart::all();
+            } catch (\Exception $e) {
+                $redcliffitems = collect(); // prevent crash
+            }
 
-        View::share('redcliffitems', $redcliffitems);
+            $view->with('redcliffitems', $redcliffitems);
+        });
     }
 }
