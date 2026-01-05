@@ -88,6 +88,7 @@
         </div>
     </div>
 
+
     <!-- Packages -->
     <div class="container">
         <div class="packages-grid">
@@ -102,7 +103,6 @@
                     $tests = $description['tests'] ?? [];
                 @endphp
 
-        
                 <div class="package-card">
 
                     <div class="test-icon">
@@ -142,8 +142,9 @@
             @endforeach
         </div>
     </div>
+     @if(isset($redcliffitems))
      <x-retailer.recliffcart   :redcliffcartitems="$redcliffitems" />
-
+     @endif
 
     <x-retailer.footer />
     <script>
