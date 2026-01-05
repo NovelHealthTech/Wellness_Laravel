@@ -359,6 +359,8 @@
     $tests = $description->tests ?? [];
 @endphp
 
+
+
 <div class="container my-5">
     <div class="row g-4">
 
@@ -482,17 +484,20 @@
                         <span>✓</span> Secure Payment
                     </div>
                 </div>
+                
             </div>
         </div>
 
     </div>
 </div>
 
+
+  
      
 
      <x-retailer.recliffcart :redcliffcartitems="$redcliffitems" />
     
-    
+ 
 
 
 <script>
