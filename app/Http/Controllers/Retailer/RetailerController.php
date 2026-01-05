@@ -580,9 +580,10 @@ class RetailerController extends Controller
 
 
             }
+            $redcliffitems = Redcliffcart::all();
 
-            return view("retailer.individualpackage", compact('package', 'data', 'recliffcartpackages_ids'));
-
+            return view("retailer.individualpackage", compact('package', 'data', 'recliffcartpackages_ids','redcliffitems'));
+       
 
         } catch (Exception $e) {
 
@@ -931,11 +932,11 @@ class RetailerController extends Controller
                 'accept' => 'application/json',
                 'X-MERCHANT-ID' => $merchant_id
             ])
-            ->timeout(30)
-            ->get("https://api.phonepe.com/apis/hermes/pg/v1/status/{$merchant_id}/{$transaction_id}");
+                ->timeout(30)
+                ->get("https://api.phonepe.com/apis/hermes/pg/v1/status/{$merchant_id}/{$transaction_id}");
 
             $responseData = $response->json();
-            
+
             // Check if payment was successful
             if (!isset($responseData['success']) || !$responseData['success']) {
                 return redirect()->route('retailer.allpackages')
