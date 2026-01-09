@@ -142,6 +142,9 @@
             @endforeach
         </div>
     </div>
+
+
+    
      @if(isset($redcliffitems))
      <x-retailer.recliffcart   :redcliffcartitems="$redcliffitems" />
      @endif

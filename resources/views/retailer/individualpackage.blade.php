@@ -446,17 +446,18 @@
                                     <span class="vendor-name">Redcliffe Labs</span>
                                 </div>
                             </div>
-                            
+
                          @if (in_array($package->id,$recliffcartpackages_ids))
-
                            <i class="bi bi-trash"></i>
-
                          @else
+
+                           <div class="delete_icon d-none" data-package_id={{ $package->id }} data-vendor_id="{{ $data["redcliff"]["vendor_id"] }}">
+                                <i class="bi bi-trash"></i>
+                           </div>
+
                             <div class="vendor-price-section">
                                 <span class="price-amount">₹{{ $data['redcliff']['price'] }}</span>
                             </div>
-
-
                         @endif
                         </a>
                              
@@ -543,6 +544,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (res.ok && data.status === "success") {
                 console.log("Redcliff Cart Data:", data.redcliffcart);
+
+               vendorCart.querySelector(".delete_icon").classList.remove("d-none");
+
+               vendorCart.querySelector(".vendor-price-section").classList.add("d-none");
+
 
                 // Update Redcliff cart badge
                 const count = data.redcliffcart.length;

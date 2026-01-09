@@ -32,7 +32,7 @@ class LoginController extends Controller
 
             if ($user->role_id == 2 && $user->is_loggedin==1) {
 
-
+                    
                 return redirect()->route("retailer.retailerhomepage");
             }
 

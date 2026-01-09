@@ -114,7 +114,6 @@
             <i class="fa-solid fa-crown"></i>
             <p>MediBuddy <span>Gold</span></p>
         </a>
-
     </div>
 </section>
 

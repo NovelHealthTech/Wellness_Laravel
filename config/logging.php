@@ -126,7 +126,15 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+       
 
+        'create_booking' => [
+        'driver' => 'daily',
+        'path' => storage_path('logs/create_booking/booking.log'),
+        'level' => env('LOG_LEVEL', 'debug'),
+        'days' => 14,
+        'permission' => 0664,
+    ],
     ],
 
 ];

@@ -24,6 +24,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use League\CommonMark\Extension\SmartPunct\EllipsesParser;
 use Illuminate\Support\Facades\Storage;
+use PhonePe\payments\v2\standardCheckout\StandardCheckoutClient;
+use PhonePe\Env;
+use PhonePe\payments\v2\models\request\builders\StandardCheckoutPayRequestBuilder;
+
 class RetailerController extends Controller
 {
     public function retailerhomepage()
@@ -580,10 +584,12 @@ class RetailerController extends Controller
 
 
             }
-            $redcliffitems = Redcliffcart::all();
 
-            return view("retailer.individualpackage", compact('package', 'data', 'recliffcartpackages_ids','redcliffitems'));
-       
+
+
+
+            return view("retailer.individualpackage", compact('package', 'data', 'recliffcartpackages_ids'));
+
 
         } catch (Exception $e) {
 
@@ -680,6 +686,7 @@ class RetailerController extends Controller
 
     public function redcliffdates(Request $request)
     {
+
         $date = $request->date;
         $latitude = $request->latitude;
         $longitude = $request->longitude;
@@ -730,10 +737,6 @@ class RetailerController extends Controller
             $collection_date = $request->redcliffdate;
             $collection_slot_id = $request->timeSlot;
 
-
-
-
-
             return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id'));
 
 
@@ -744,9 +747,8 @@ class RetailerController extends Controller
 
         }
 
-
-
         return view('retailer.redcliffbookingdetail');
+
     }
 
 
@@ -828,63 +830,20 @@ class RetailerController extends Controller
                 "user_id_on_phonepe" => "NHT-" . Auth::id(),
                 "phone_pe_merchant_id" => "M1VPZ8VOW6UH",
                 "phone_pe_transaction_id" => strtoupper($this->generateUniqueTrstID(10)),
-                "amount_in_paise" => $totalPrice * 100,
+                "amount_in_paise" => $totalPrice * 100, // If price is in ₹, multiply by 100
                 "payment_status" => "PAYMENT INITIATED",
                 "customer_id" => $inserted_id,
             ];
 
-            // 3️⃣ PhonePe payload
-            $payload = [
-                "merchantId" => $order_data['phone_pe_merchant_id'],
-                "merchantTransactionId" => $order_data['phone_pe_transaction_id'],
-                "merchantUserId" => $order_data['user_id_on_phonepe'],
-                "amount" => $order_data['amount_in_paise'],
-                "redirectUrl" => route(
-                    'retailer.checking_payment_status_redcliffe',
-                    ['transaction_id' => encrypt($order_data['phone_pe_transaction_id'])]
-                ),
-                "redirectMode" => "POST",
-                "callbackUrl" => url('/payment/phonepe/callback'),
-                "mobileNumber" => "7754093527",
-                "paymentInstrument" => [
-                    "type" => "PAY_PAGE"
-                ]
-            ];
 
-            $base64Payload = base64_encode(json_encode($payload));
+            // // 8️⃣ Save order BEFORE redirect
+            // $userpackages = Redcliffcart::where('user_id', Auth::id())->pluck('package_id');
 
-            $saltKey = 'c42a3914-25d2-4c3f-808b-bc9c4cae5530';
-            $saltIndex = '2';
-
-            $checksum = hash('sha256', $base64Payload . '/pg/v1/pay' . $saltKey)
-                . '###' . $saltIndex;
-
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'accept' => 'application/json',
-                'X-VERIFY' => $checksum,
-                'X-MERCHANT-ID' => $payload['merchantId'],
-            ])->post(
-                    'https://api.phonepe.com/apis/hermes/pg/v1/pay',
-                    ['request' => $base64Payload]
-                );
-
-            // if (!$response->successful()) {
-            //     dd($response->body());
-            //     throw new \Exception($response->body());
-            // }
-
-            // ✅ Http::post()->json() already returns array
-            $responseData = $response->json();
-
-
-
-            // 8️⃣ Save order BEFORE redirect
-            $userpackages = Redcliffcart::where('user_id', Auth::id())->pluck('package_id');
-
-            $order_data['package_ids'] = $userpackages;
+            // $order_data['package_ids'] = $userpackages;
 
             $order = NhtOrder::create($order_data);
+
+
 
 
             $nhtorderid = $order->id;
@@ -893,10 +852,57 @@ class RetailerController extends Controller
                 "nht_order_id" => $nhtorderid,
             ]);
 
-            // 9️⃣ Redirect to PhonePe payment page
-            return redirect(
-                $responseData['data']['instrumentResponse']['redirectInfo']['url']
+
+
+            // 3️⃣ Initialize PhonePe client
+            $clientId = "M1VPZ8VOW6UH_25120913183"; // Your Client ID
+            $clientVersion = 1;                       // Client Version
+            $clientSecret = "NGQxNzhmZWMtY2NkZS00YjkyLThhNDEtY2VmNTE2YWRiMTQ0"; // Client Secret
+            $env = Env::UAT;
+
+            $client = StandardCheckoutClient::getInstance(
+                $clientId,
+                $clientVersion,
+                $clientSecret,
+                $env
             );
+
+            // 4️⃣ Prepare payment request
+            $merchantOrderId = $order_data["phone_pe_transaction_id"];
+            $amount = $order_data["amount_in_paise"];
+            $redirectUrl = route(
+                'retailer.checking_payment_status_redcliffe',
+                ['transaction_id' => encrypt($merchantOrderId)]
+            );
+            $message = "Your order details";
+
+            $payRequest = StandardCheckoutPayRequestBuilder::builder()
+                ->merchantOrderId($merchantOrderId)
+                ->amount($amount)
+                ->redirectUrl($redirectUrl)
+                ->message($message)  // Optional message
+                ->build();
+
+            // 5️⃣ Call PhonePe API
+            try {
+
+                $payResponse = $client->pay($payRequest);
+
+                if ($payResponse->getState() === "PENDING") {
+                    // Redirect user to PhonePe payment page
+                    header("Location: " . $payResponse->getRedirectUrl());
+                    exit();
+                } else {
+                    // Handle errors
+                    echo "Payment initiation failed: " . $payResponse->getState();
+                }
+
+            } catch (\PhonePe\common\exceptions\PhonePeException $e) {
+                // Handle exceptions
+                echo "Error initiating payment: " . $e->getMessage();
+            }
+
+
 
         } catch (\Exception $e) {
             return back()->with(["status" => "failure", "message" => $e->getMessage()]);
@@ -905,90 +911,101 @@ class RetailerController extends Controller
 
     public function checking_payment_status_redcliffe($transaction_id)
     {
+
+
+        // Decrypt transaction ID
+        $transaction_id = decrypt($transaction_id);
+        // Find transaction data
+        $transaction_data = NhtOrder::where("phone_pe_transaction_id", $transaction_id)->first();
+
+        if (empty($transaction_data)) {
+            return redirect()->route('retailer.allpackages')
+                ->with(["status" => "failure", "message" => "Sometthing went Wrong"]);
+        }
+
+
+        $clientId = "M1VPZ8VOW6UH_25120913183"; // Your Client ID
+        $clientVersion = 1;                       // Client Version
+        $clientSecret = "NGQxNzhmZWMtY2NkZS00YjkyLThhNDEtY2VmNTE2YWRiMTQ0"; // Client Secret
+        $env = Env::UAT;
+
+
+
+
+        $client = StandardCheckoutClient::getInstance(
+            $clientId,
+            $clientVersion,
+            $clientSecret,
+            $env
+        );
+
+
+        $merchantOrderId = $transaction_id; // Replace with the order ID you want to check
+
+
         try {
-            // Decrypt transaction ID
-            $transaction_id = decrypt($transaction_id);
 
-            // Find transaction data
-            $transaction_data = NhtOrder::where("phone_pe_merchant_id", $transaction_id)->first();
+            $statusCheckResponse = $client->getOrderStatus($merchantOrderId, true);
 
-            if (empty($transaction_data)) {
-                return redirect()->route('retailer.allpackages')
-                    ->with(["status" => "failure", "message" => "Sometthing went Wrong"]);
-            }
+            // dd([
+            //     'order_id' => $statusCheckResponse->orderId,
+            //     'state' => $statusCheckResponse->state,
+            //     'amount' => $statusCheckResponse->amount,
+            //     'expire_at' => $statusCheckResponse->expireAt,
+            //     'payment_details' => $statusCheckResponse->paymentDetails,
 
-            // PhonePe API Configuration
-            $merchant_id = 'M1VPZ8VOW6UH';
-            $salt_key = 'c42a3914-25d2-4c3f-808b-bc9c4cae5530';
-            $salt_index = '2';
+            //     // first payment detail (most important)
+            //     'transaction_id' => $statusCheckResponse->paymentDetails[0]->transactionId ?? null,
+            //     'payment_mode' => $statusCheckResponse->paymentDetails[0]->paymentMode ?? null,
+            //     'payment_state' => $statusCheckResponse->paymentDetails[0]->state ?? null,
+            // ]);
 
-            // Generate verification hash
-            $url_string = "/pg/v1/status/{$merchant_id}/{$transaction_id}";
-            $verify_value = hash('sha256', $url_string . $salt_key) . '###' . $salt_index;
 
-            // Make API request to PhonePe
-            $response = Http::withHeaders([
-                'X-VERIFY' => $verify_value,
-                'accept' => 'application/json',
-                'X-MERCHANT-ID' => $merchant_id
-            ])
-                ->timeout(30)
-                ->get("https://api.phonepe.com/apis/hermes/pg/v1/status/{$merchant_id}/{$transaction_id}");
 
-            $responseData = $response->json();
 
-            // Check if payment was successful
-            if (!isset($responseData['success']) || !$responseData['success']) {
-                return redirect()->route('retailer.allpackages')
-                    ->with(["status" => "failure", "message" => "Payment Verification failed"]);
-            }
 
-            // Get all orders with this transaction ID
-            $results = NhtOrder::where("phone_pe_transaction_id", $transaction_id)->get();
-
-            if ($results->isEmpty()) {
+            if (!$transaction_data) {
                 return redirect()->route('retailer.allpackages')
                     ->with('error', 'No orders found for this transaction');
             }
 
             // Update payment status for all related orders
-            foreach ($results as $result) {
-                // Create log entry before update
-                $log = [
-                    "table_name" => "nht_orders",
-                    "main_id_number" => $result->id,
-                    "data_before_updation" => json_encode($result->toArray())
-                ];
 
-                $logmaster = Logmaster::create($log);
+            // Create log entry before update
+            $log = [
+                "table_name" => "nht_orders",
+                "main_id_number" => $transaction_data->id,
+                "data_before_updation" => json_encode($transaction_data->toArray())
+            ];
 
-                if ($logmaster) {
-                    // Update payment status
-                    $result->update(['payment_status' => "PAYMENT SUCCESS"]);
+            $logmaster = Logmaster::create($log);
 
-                    // Log data after update
-                    $newdata = NhtOrder::find($result->id);
-                    $logmaster->update([
-                        "data_after_updation" => json_encode($newdata->toArray())
-                    ]);
-                }
+            if ($logmaster) {
+                // Update payment status
+                $transaction_data->update(['payment_status' => "PAYMENT SUCCESS"]);
+
+                // Log data after update
+                $newdata = NhtOrder::find($transaction_data->id);
+                $logmaster->update([
+                    "data_after_updation" => json_encode($newdata->toArray())
+                ]);
             }
 
-            // Get the latest transaction data
-            $latest_transaction_data = NhtOrder::where("phone_pe_transaction_id", $transaction_id)->first();
 
-            if (!$latest_transaction_data) {
-                return redirect()->route('retailer.allpackages')
-                    ->with('error', 'Transaction data not found');
-            }
-
-            $nht_order_id = $latest_transaction_data->id;
+            $nht_order_id = $transaction_data->id;
 
             // Get customer order details
             $customer_data = Customer_order::where("nht_order_id", $nht_order_id)->first();
 
-            if (!$customer_data) {
+            $package_codes = Vendorpricenht::whereIn(
+                'package_id',
+                $customer_data->customer_packages
+            )
+                ->where('vendor_id', 1)
+                ->pluck('package_code')
+                ->toArray();
 
+            if (!$customer_data) {
                 return redirect()->route('retailer.allpackages')
                     ->with('error', 'Customer order not found');
             }
@@ -1009,31 +1026,48 @@ class RetailerController extends Controller
                 "customer_whatsapppnumber" => $customer_data->customer_whatsappnumber,
                 "is_credit" => true,
                 "landmark" => $customer_data->customer_landmark,
-                "package_code" => json_decode($customer_data->customer_packages, true),
+                "package_code" => $package_codes,
+                true,
                 "pincode" => $customer_data->pincode,
                 "additional_member" => [],
             ];
 
+
+
             // Create booking at Redcliffe
             $bookingResponse = Http::withHeaders([
-                'key' => 'PutkOEaLCumXD2t0054W6BW4VvFY4odj',
+                'key' => 'aU8MOnfONIgMrM9q1eRB8WFbvoBEj1wN',
                 'Content-Type' => 'application/json',
             ])
-                ->timeout(30)
+                ->timeout(120)
                 ->post(
-                    'https://api.redcliffelabs.com/api/external/v2/center-create-booking/',
+                    'https://apiqa.redcliffelabs.com/api/external/v2/center-create-booking/',
                     $payload
                 );
 
             $bookingResponseData = $bookingResponse->json();
 
+
+
+            if (!isset($bookingResponseData['status']) || $bookingResponseData['status'] !== 'success') {
+                return redirect()->route('retailer.allpackages')
+                    ->with(["status" => $bookingResponseData["status"], "message" => $bookingResponseData["message"]]);
+            }
+
+
+
             // Check if booking creation was successful
             if (!isset($bookingResponseData['status']) || $bookingResponseData['status'] !== 'success') {
                 return redirect()->route('retailer.allpackages')
-                    ->with('error', 'Booking creation failed at Redcliffe');
+                    ->with('error', $bookingResponseData["message"]);
             }
 
             $booking_id = $bookingResponseData["booking_id"];
+
+
+            // $this->writeToLog($create_booking, 'create_redcliff_booking', 'create_redcliff_booking');
+
+
 
             // Update customer order with booking ID
             Customer_order::where("nht_order_id", $nht_order_id)->update([
@@ -1043,12 +1077,12 @@ class RetailerController extends Controller
 
             // Confirm the booking
             $confirmResponse = Http::withHeaders([
-                'key' => 'PutkOEaLCumXD2t0054W6BW4VvFY4odj',
+                'key' => 'aU8MOnfONIgMrM9q1eRB8WFbvoBEj1wN',
                 'Content-Type' => 'application/json',
             ])
-                ->timeout(30)
+                ->timeout(60)
                 ->post(
-                    'https://api.redcliffelabs.com/api/external/v2/center-confirm-booking/',
+                    'https://apiqa.redcliffelabs.com/api/external/v2/center-confirm-booking/',
                     [
                         "booking_id" => $booking_id,
                         "is_confirmed" => true
@@ -1057,15 +1091,26 @@ class RetailerController extends Controller
 
             $confirmResponseData = $confirmResponse->json();
 
+            if (!isset($confirmResponseData['status']) || $confirmResponseData['status'] !== 'success') {
+                return redirect()->route('retailer.allpackages')
+                    ->with(["status" => $confirmResponse["status"], "message" => $confirmResponseData["message"]]);
+            }
+
+
+
+
             // Log all API interactions
             $logs = [
+
                 "details_enter_api" => $payload,
                 "details_enter_api_response" => $bookingResponseData,
                 "confirmation_booking_api" => $booking_id,
                 "confirmation_booking_api_response" => $confirmResponseData,
+
             ];
 
             $this->writeToLog($logs, 'bookings', 'redcliffe bookings');
+
 
             // Check if confirmation was successful
             if (!isset($confirmResponseData['status']) || $confirmResponseData['status'] !== 'success') {
@@ -1084,192 +1129,28 @@ class RetailerController extends Controller
                 'Expires' => '0',
             ]);
 
-        } catch (DecryptException $e) {
-            Log::error('Decryption failed for transaction: ' . $e->getMessage());
-            return redirect()->route('retailer.allpackages')
-                ->with('error', 'Invalid transaction ID');
 
-        } catch (Exception $e) {
-            Log::error('Payment status check failed: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
+        } catch (\PhonePe\common\exceptions\PhonePeException $e) {
 
-            return redirect()->route('retailer.allpackages')
-                ->with('error', 'An error occurred while processing your payment. Please contact support.');
+            dd([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
         }
+
+
+
+
+
+
+
+
     }
 
 
-    // public function checking_payment_status_redcliffe($transaction_id)
-    // {
 
-
-    //     try {
-
-    //         $data['page'] = 'checking-payment-status';
-    //         $transaction_id = decrypt($transaction_id);
-    //         $transaction_data = NhtOrder::where("phone_pe_merchant_id", $transaction_id)->get();
-
-    //         if (!empty($transaction_data)) {
-
-    //             $url_string = '/pg/v1/status/M1VPZ8VOW6UH/' . $transaction_id;
-
-    //             $salt_key = 'c42a3914-25d2-4c3f-808b-bc9c4cae5530';
-    //             $salt_index = '2';
-    //             $verify_value = hash('sha256', $url_string . $salt_key) . '###' . $salt_index;
-    //             $curl = curl_init();
-
-    //             curl_setopt_array(
-    //                 $curl,
-    //                 array(
-    //                     CURLOPT_URL => 'https://api.phonepe.com/apis/hermes/pg/v1/status/M1VPZ8VOW6UH/' . $transaction_id,
-    //                     CURLOPT_RETURNTRANSFER => true,
-    //                     CURLOPT_ENCODING => '',
-    //                     CURLOPT_MAXREDIRS => 10,
-    //                     CURLOPT_TIMEOUT => 0,
-    //                     CURLOPT_FOLLOWLOCATION => true,
-    //                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //                     CURLOPT_CUSTOMREQUEST => 'GET',
-    //                     CURLOPT_HTTPHEADER => array(
-    //                         'X-VERIFY: ' . $verify_value,
-    //                         'accept: application/json',
-    //                         'X-MERCHANT-ID: M1VPZ8VOW6UH'
-    //                     ),
-    //                 )
-    //             );
-
-    //             $response = curl_exec($curl);
-
-    //             curl_close($curl);
-
-    //             $response = json_decode($response);
-
-    //             if ($response->success) {
-
-    //                 $results = NhtOrder::where("phone_pe_transaction_id", $transaction_id)->get();
-    //                 foreach ($results as $result) {
-
-    //                     $log["table_name"] = "nht_orders";
-    //                     $log["main_id_number"] = $result->id;
-    //                     $log["main_id_number"] = json_encode($result);
-    //                     $logmaster = Logmaster::create($log);
-    //                     $inserted_id = $logmaster->id;
-
-    //                     if ($logmaster) {
-
-    //                         $updatenhtorder = NhtOrder::where("id", $result->id)->update([
-
-    //                             'payment_status' => "PAYMENT SUCCESS"
-    //                         ]);
-
-
-    //                         if ($updatenhtorder) {
-    //                             $newdata = NhtOrder::where("id", $result->id)->first();
-    //                             $log_data["data_after_updation"] = json_encode($newdata);
-    //                             Logmaster::where("id", $inserted_id)->update($log_data);
-
-
-
-    //                         }
-    //                     }
-
-    //                 }
-
-    //                 $latest_tranascation_data = NhtOrder::where("phone_pe_transaction_id", $transaction_id)->first();
-    //                 $nht_order_id = $latest_tranascation_data->id;
-
-    //                 $customer_data = Customer_order::where("nht_order_id", $nht_order_id)->first();
-
-    //                 if ($customer_data) {
-
-    //                     $payload = [
-    //                         "booking_date" => $customer_data->booking_date,
-    //                         "collection_date" => $customer_data->collection_date,
-    //                         "collection_slot" => $customer_data->collection_slot_id,
-    //                         "customer_address" => $customer_data->customer_address,
-    //                         "customer_age" => $customer_data->customer_age,
-    //                         "customer_altphonenumber" => $customer_data->customer_whatsappnumber,
-    //                         "customer_gender" => $customer_data->customer_gender,
-    //                         "customer_latitude" => $customer_data->customer_latitude,
-    //                         "customer_longitude" => $customer_data->customer_longitude,
-    //                         "customer_name" => $customer_data->customer_name,
-    //                         "customer_phonenumber" => $customer_data->customer_phonenumber,
-    //                         "customer_whatsapppnumber" => $customer_data->customer_whatsappnumber,
-    //                         "is_credit" => true,
-    //                         "landmark" => $customer_data->customer_landmark,
-    //                         "package_code" => [$customer_data->package_code],
-    //                         "pincode" => $customer_data->pincode,
-    //                         "additional_member" => [],
-    //                     ];
-
-    //                     $response = Http::withHeaders([
-    //                         'key' => 'PutkOEaLCumXD2t0054W6BW4VvFY4odj',
-    //                         'Content-Type' => 'application/json',
-    //                     ])
-    //                         ->timeout(30)
-    //                         ->post(
-    //                             'https://api.redcliffelabs.com/api/external/v2/center-create-booking/',
-    //                             $payload
-
-    //                         );
-
-    //                     // Convert response to array
-    //                     $response1 = $response->json();
-    //                     if (isset($response1['status']) && $response1['status'] === 'success') {
-    //                         $booking_id = $response1["booking_id"];
-
-
-    //                         Customer_order::where("nht_order_id", $nht_order_id)->update([
-
-    //                             "booking_id" => $booking_id,
-    //                             "pk" => $booking_id,
-    //                         ]);
-
-    //                         $confirmResponse = Http::withHeaders([
-    //                             'key' => 'PutkOEaLCumXD2t0054W6BW4VvFY4odj',
-    //                             'Content-Type' => 'application/json',
-    //                         ])
-    //                             ->timeout(30)
-    //                             ->post(
-    //                                 'https://api.redcliffelabs.com/api/external/v2/center-confirm-booking/',
-    //                                 [
-    //                                     "booking_id" => $booking_id,
-    //                                     "is_confirmed" => true
-    //                                 ]
-    //                             );
-
-    //                         // Same as: json_decode($response, true)
-    //                         $response = $confirmResponse->json();
-
-    //                         $logs = array(
-    //                             "details_enter_api" => $payload,
-    //                             "details_enter_api_response" => $response1,
-    //                             "confirmationn_booking_api" => $booking_id,
-    //                             "confirmationn_booking_api_response" => $response,
-    //                         );
-
-
-    //                         $this->writeToLog($logs, 'bookings', 'redclif bookings');
-
-
-    //                         if ($response['status'] == "success") {
-
-
-    //                             return redirect()->route("retailer.invoice");
-
-
-
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     } catch (Exception $e) {
-
-
-
-    //     }
-
-    // }
 
 
     public function Payment_and_finalbooking_controller(Request $request)
@@ -1281,28 +1162,29 @@ class RetailerController extends Controller
 
     protected function writeToLog($data, $directry, $title = '')
     {
-        $pagename = date("Y-m-d");
-        $filePath = $directry . '/' . $pagename . '.log';
+        $pagename = date('Y-m-d');
+        $directory = $directry; // e.g. 'redlicfff'
+        $filePath = $directory . '/' . $pagename . '.log';
 
-        // Ensure directory exists
-        if (!Storage::exists($directry)) {
-            Storage::makeDirectory($directry, 0777, true);
+        // Ensure directory exists (PUBLIC)
+        if (!Storage::disk('public')->exists($directory)) {
+            Storage::disk('public')->makeDirectory($directory);
         }
 
         // If file doesn't exist, create it
-        if (!Storage::exists($filePath)) {
-            $this->createFile($filePath);
+        if (!Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->put($filePath, 'Log file created');
         }
 
         // Prepare log content
         $log = "\n------------------------------------------------------------------------------------------------\n";
-        $log .= date("Y.m.d G:i:s") . "\n";
-        $log .= strlen($title) > 0 ? $title : 'DEBUG';
+        $log .= date('Y-m-d H:i:s') . "\n";
+        $log .= !empty($title) ? $title : 'DEBUG';
         $log .= "\n" . print_r($data, true);
         $log .= "\n------------------------------------------------------------------------------------------------\n";
 
-        // Append log
-        Storage::append($filePath, $log);
+        // Append log (PUBLIC)
+        Storage::disk('public')->append($filePath, $log);
 
         return true;
     }

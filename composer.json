@@ -11,7 +11,10 @@
         "laravel/tinker": "^2.10.1",
         "spatie/laravel-permission": "^6.23",
         "yajra/laravel-datatables": "^12.0",
-        "yajra/laravel-datatables-oracle": "^12.6"
+        "yajra/laravel-datatables-oracle": "^12.6",
+        "phonepe/pg-php-sdk-v2": "^2.0",
+        "vlucas/phpdotenv": "^5.6",
+        "netresearch/jsonmapper": "^4.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -87,6 +90,27 @@
             "php-http/discovery": true
         }
     },
+
+     "repositories": [
+      {
+        "type": "package",
+        "url": "./vendor/phonepe/pg-sdk-php/",
+        "package": {
+          "name": "phonepe/pg-php-sdk-v2",
+          "version": "2.0.0",
+          "dist": {
+            "url": "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-php-sdk/v2-sdk.zip",
+            "type": "zip"
+          },
+          "autoload": {
+            "classmap": ["/"]
+          }
+        }
+      }
+    ],
+
+
+    
     "minimum-stability": "stable",
     "prefer-stable": true
 }

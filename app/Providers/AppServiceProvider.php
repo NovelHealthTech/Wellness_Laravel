@@ -10,14 +10,12 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        View::composer('retailer.individualpackage', function ($view) {
-            try {
-                $redcliffitems = Redcliffcart::all();
-            } catch (\Exception $e) {
-                $redcliffitems = collect(); // prevent crash
-            }
+        try {
+            $redcliffitems = Redcliffcart::all();
+        } catch (\Exception $e) {
+            $redcliffitems = collect(); // prevent crash
+        }
 
-            $view->with('redcliffitems', $redcliffitems);
-        });
+        View::share('redcliffitems', $redcliffitems);
     }
 }
