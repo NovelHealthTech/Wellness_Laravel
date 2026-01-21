@@ -88,6 +88,8 @@
             <a class="text-secondary text-decoration-none" href="{{ route('privacy_policy') }}" class="text_grey">PRIVACY POLICIES</a>
             {{-- <li class="text_grey">COPYRIGHT POLICIES</li> --}}
             {{-- <li class="text_grey">Gallery</li> --}}
+
+            <a class="text-secondary text-decoration-none" href="{{ route('refund_cancellation') }}">REFUND AND CANCELLATION</a>
         </ul>
     </div>
 

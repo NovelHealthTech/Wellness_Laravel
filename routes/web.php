@@ -58,6 +58,11 @@ return view('website.privacy_policy');
 
 })->name('privacy_policy');
 
+Route::get("/CANCELLATION",function(){
+
+return view('website.refund_and_cancellation');
+})->name('refund_cancellation');
+
 Route::get("/loginview", function () {
     return response()
         ->view('login')
