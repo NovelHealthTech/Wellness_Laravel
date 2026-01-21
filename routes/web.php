@@ -61,7 +61,15 @@ return view('website.privacy_policy');
 Route::get("/CANCELLATION",function(){
 
 return view('website.refund_and_cancellation');
+
 })->name('refund_cancellation');
+
+
+Route::get("/terms_and_condition",function(){
+
+  return view('website.terms_and_condition');
+
+})->name('terms_and_condition');
 
 Route::get("/loginview", function () {
     return response()

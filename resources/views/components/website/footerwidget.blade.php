@@ -90,6 +90,8 @@
             {{-- <li class="text_grey">Gallery</li> --}}
 
             <a class="text-secondary text-decoration-none" href="{{ route('refund_cancellation') }}">REFUND AND CANCELLATION</a>
+
+            <a href="{{ route('terms_and_condition') }}" class="text-secondary text-decoration-none">TERMS AND CONDITION</a>
         </ul>
     </div>
 
