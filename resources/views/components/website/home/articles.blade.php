@@ -11,7 +11,7 @@
     <p>Health articles that keep you informed about</p>
     <p>good health practices and achieve your goals.</p>
     <div class="mt-3">
-      <a class="text_grey text-decoration-none pt-5" href="#">See all articles</a>
+      {{-- <a class="text_grey text-decoration-none pt-5" href="#">See all articles</a> --}}
     </div>
   </div>
   
