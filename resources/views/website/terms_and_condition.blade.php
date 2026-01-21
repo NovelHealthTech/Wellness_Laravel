@@ -29,7 +29,7 @@
                         </p>
 
                         <p>
-                            <strong>C.</strong> The Platform is owned by <strong>Novelhealthtech</strong>, a company
+                            <strong>C.</strong> The Platform is owned by <strong>Novel Healthtech Solutions Pvt. Ltd.</strong>, a company
                             incorporated under the Companies Act, 1956 with its registered office at
                             <strong>D-101, 2nd Floor, Phase V, Udyog Vihar, Sector 19, Gurugram, Haryana 122016</strong>
                             (hereinafter referred to as "Platform Owner", “we”, “us”, “our”).
