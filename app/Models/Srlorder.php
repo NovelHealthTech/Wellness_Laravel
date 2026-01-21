@@ -9,7 +9,7 @@ class Srlorder extends Model
     protected $fillable = [
         "user_id",
         "nht_order_id",
-        "package_id",
+        "package_ids",
         "title",
         "first_name",
         "last_name",

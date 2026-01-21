@@ -102,19 +102,7 @@
         }
     </style>
 </head>
-@if(session('status') === 'failure')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: @json(session('message')),
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#dc3545'
-            });
-        });
-    </script>
-@endif
+
 
 <body>
     <!-- Sticky Header -->
@@ -132,15 +120,15 @@
             <div class="col-lg-8">
                 <div class="card p-4 shadow-sm">
                     <h5 class="mb-3">Cart Items</h5>
-                    @if($srlcartitems->isNotEmpty())
+                    @if($srlcart_items->isNotEmpty())
                         <div class="srl-cart-list">
-                            @foreach($srlcartitems as $item)
+                            @foreach($srlcart_items as $item)
                                 <div class="srl-cart-card" id="cart-item-{{ $item->id }}">
                                     <div class="cart-card-body">
                                         <div class="cart-info">
                                             <h6>{{ $item->package->packagename ?? 'Package Name' }}</h6>
-                                            <p class="package-price">₹{{ number_format($item->package->price, 0) }}</p>
-                                            <p class="package-meta">Vendor: {{ $item->vendor->name ?? 'N/A' }}</p>
+                                            <p class="package-price">₹{{ number_format($item->nht_price, 0) }}</p>
+                                            <p class="package-meta">Vendor: SRL</p>
                                         </div>
                                         <button class="cart-delete-btn" onclick="removeFromCart({{ $item->id }})"
                                             title="Remove">
@@ -171,15 +159,33 @@
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+     @if(session('status') === 'failure')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: @json(session('message')),
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#dc3545'
+                    });
+                });
+            </script>
+        @endif
 
-    <script>
-        function removeFromCart(id) {
-            const el = document.getElementById('cart-item-' + id);
-            if (el) el.remove();
-        }
-    </script>
-</body>
+    <body>
+
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            function removeFromCart(id) {
+                const el = document.getElementById('cart-item-' + id);
+                if (el) el.remove();
+            }
+        </script>
+    </body>
 
 </html>

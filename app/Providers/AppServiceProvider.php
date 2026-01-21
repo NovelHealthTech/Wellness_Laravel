@@ -10,12 +10,6 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        try {
-            $redcliffitems = Redcliffcart::all();
-        } catch (\Exception $e) {
-            $redcliffitems = collect(); // prevent crash
-        }
-
-        View::share('redcliffitems', $redcliffitems);
+       
     }
 }

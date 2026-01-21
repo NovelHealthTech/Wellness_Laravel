@@ -272,7 +272,7 @@
                             <div class="srl-cart-card" id="cart-item-1">
                                 <div class="cart-card-body">
                                     <div class="cart-info">
-                                        <h6>{{ $item->redcliffpackagename->packagename }}</h6>
+                                        <h6>{{ $item->package->packagename }}</h6>
                                         <p class="package-price">{{ $item->nht_price }}</p>
                                         <p class="package-meta">Vendor: Redcliff</p>
                                     </div>
@@ -342,9 +342,7 @@
                                 placeholder="Enter pincode" pattern="[0-9]{6}" maxlength="6" required>
                             <span class="error"></span>
                         </div>
-
                         <button id="redcliffsubmit" type="submit" class="btn btn-primary w-100">Check</button>
-
                     </form>
                 </div>
             </div>

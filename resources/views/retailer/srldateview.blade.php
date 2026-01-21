@@ -2,7 +2,6 @@
 <style>
     body {
         background: #f8f9fa;
-
     }
 
     .date-picker-wrapper {
@@ -89,7 +88,8 @@
     }
 
     .date-card.selected .date-number,
-    .date-card.selected .day-name {
+    .date-card.selected .day-name,
+    .date-card.selected .month-label {
         color: white !important;
     }
 
@@ -156,7 +156,6 @@
         margin-bottom: 0.25rem;
     }
 
-
     /* for the slots */
     .slot-legend {
         display: flex;
@@ -199,7 +198,7 @@
     }
 
     .slot-box {
-        height: 30px;
+        height: 40px;
         font-size: 12px;
         background: #fff;
         text-align: center;
@@ -208,6 +207,10 @@
         font-weight: 500;
         user-select: none;
         border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
     }
 
     .slot-box.green {
@@ -215,9 +218,17 @@
         color: #28a745;
     }
 
+    .slot-box.green:hover {
+        background: #d4edda;
+    }
+
     .slot-box.yellow {
         border-color: #ffc107;
         color: #856404;
+    }
+
+    .slot-box.yellow:hover {
+        background: #fff3cd;
     }
 
     .slot-box.red {
@@ -225,6 +236,7 @@
         color: #dc3545;
         cursor: not-allowed;
         background: #f8f9fa;
+        opacity: 0.6;
     }
 
     .slot-box.active {
@@ -260,7 +272,7 @@
     </div>
     <div class="card container my-5 p-5 w-100">
 
-        <div id="slotLegend" class="slot-legend  text-center"></div>
+        <div id="slotLegend" class="slot-legend text-center"></div>
         <form id="srldateslot" action="{{ route('retailer.srlslotsubmit.post') }}" method="post">
             @csrf
             <input type="hidden" name="slot_time" id="slot_time">
@@ -274,27 +286,20 @@
         </form>
     </div>
 
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let selectedDateIndex = null;
+        let selectedDateIndex = 0;
 
         function generateDates() {
-
             const container = document.getElementById('datesContainer');
             const today = new Date();
             const dates = [];
 
             // Generate 30 days starting from today
             for (let i = 0; i < 30; i++) {
-
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
                 dates.push(date);
-
             }
 
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -305,34 +310,17 @@
             let html = '';
 
             dates.forEach((date, index) => {
-
                 const dayNum = date.getDate();
                 const dayName = days[date.getDay()];
                 const monthName = months[date.getMonth()];
 
-                // Random availability for demo
-                let availability, badgeClass;
-                const rand = Math.random();
-                if (rand > 0.7) {
-                    availability = 'Booking closed';
-                    badgeClass = 'badge-closed';
-                } else if (rand > 0.4) {
-                    availability = 'Available';
-                    badgeClass = 'badge-available';
-                } else {
-                    availability = 'Limited slots';
-                    badgeClass = 'badge-limited';
-                }
-
                 // Today's date should be selected by default
                 const isSelected = index === 0 ? 'selected' : '';
-                if (index === 0) selectedDateIndex = 0;
 
                 html += `
                     <div class="date-card ${isSelected}" onclick="selectDate(${index})" data-index="${index}">
                         <div class="month-label">${dayNum} ${monthName}</div>
                         <div class="day-name">${dayName}</div>
-                        <div class="availability-badge ${badgeClass}">${availability}</div>
                     </div>
                 `;
             });
@@ -340,9 +328,7 @@
             container.innerHTML = html;
         }
 
-
-        function selectDate(index) 
-        {
+        function selectDate(index) {
             // Remove selected class from all cards
             document.querySelectorAll('.date-card').forEach(card => {
                 card.classList.remove('selected');
@@ -350,28 +336,129 @@
 
             // Add selected class to clicked card
             const selectedCard = document.querySelector(`[data-index="${index}"]`);
-            selectedCard.classList.add('selected');
-            selectedDateIndex = index;
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                selectedDateIndex = index;
 
-            // Scroll selected card into view
-            selectedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                // Scroll selected card into view
+                selectedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+                // Fetch slots for the selected date
+                getsrlslotsdate();
+            }
         }
 
         function scrollDates(direction) {
-
             const container = document.getElementById('datesContainer');
             const scrollAmount = 300;
             container.scrollBy({
                 left: direction * scrollAmount,
                 behavior: 'smooth'
             });
+        }
 
+        async function getsrlslotsdate() {
+            const allDates = document.querySelectorAll(".date-card");
+            const selectedCard = Array.from(allDates).find(card =>
+                card.classList.contains("selected")
+            );
+
+            if (!selectedCard) {
+                console.error("No date selected");
+                return;
+            }
+
+            const label = selectedCard.querySelector(".month-label").innerText.trim();
+            const year = new Date().getFullYear();
+            const formattedDate = new Date(`${label} ${year}`).toISOString().split('T')[0];
+
+            const pincode = @json($pincode);
+            document.querySelector("#hiddenpincode").value = pincode;
+
+            const storeDateUrl = "{{ route('retailer.srldate.post') }}";
+
+            try {
+                const res = await fetch(storeDateUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        pincode: pincode,
+                        date: formattedDate
+                        
+                    })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+                const slotContainer = document.getElementById('slotContainer');
+                const slotLegend = document.getElementById('slotLegend');
+
+                // Clear on every success
+                slotContainer.innerHTML = '';
+                slotLegend.innerHTML = `
+                    <div class="legend-item">
+                        <span class="dot green"></span> Slots available
+                    </div>
+                    <div class="legend-item">
+                        <span class="dot yellow"></span> Limited slots
+                    </div>
+                    <div class="legend-item">
+                        <span class="dot red"></span> Slots not available
+                    </div>
+                `;
+
+                if (!data.slots || data.slots.length === 0) {
+                    slotContainer.innerHTML = '<p class="text-center text-muted">No slots available for this date</p>';
+                    return;
+                }
+
+                data.slots.forEach(slot => {
+                    const div = document.createElement('div');
+                    div.classList.add('slot-box');
+                    div.textContent = slot.SLOTS;
+
+                    const availability = slot.AVAIBILITY.toLowerCase();
+                    div.classList.add(availability);
+
+                    // Red slots are not clickable
+                    if (availability === 'red') {
+                        slotContainer.appendChild(div);
+                        return;
+                    }
+
+                    // Green & Yellow slots are clickable
+                    div.addEventListener('click', () => {
+                        document.querySelectorAll('.slot-box').forEach(el => el.classList.remove('active'));
+                        div.classList.add('active');
+                        document.querySelector("#slot_time").value = slot.SLOTS;
+                        console.log('Selected Slot:', slot.SLOTS);
+                    });
+
+                    slotContainer.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error("Error fetching slots:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load slots. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
 
         // Initialize
         generateDates();
+        getsrlslotsdate();
 
-        // Optional: Handle keyboard navigation
+        // Handle keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' && selectedDateIndex > 0) {
                 selectDate(selectedDateIndex - 1);
@@ -379,150 +466,30 @@
                 selectDate(selectedDateIndex + 1);
             }
         });
-   
 
-        async function getsrlslotsdate() 
-        {
-
-            const allDates = document.querySelectorAll(".date-card");
-
-            const selectedCard = Array.from(allDates).find(card =>
-                card.classList.contains("selected")
-            );
-
-            if (selectedCard) {
-
-                const label = selectedCard.querySelector(".month-label").innerText.trim(); // "19 Dec"
-                const year = new Date().getFullYear();
-
-                const formattedDate = new Date(`${label} ${year}`)
-                    .toISOString()
-                    .split('T')[0];
-
-                const pincode = @json($pincode);
-
-                document.querySelector("#hiddenpincode").value=@json($pincode);
-
-
-                const storeDateUrl = "{{ route('retailer.srldate.post') }}";
-
-                try {
-
-                    const res = await fetch(storeDateUrl, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document
-                                .querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            pincode: pincode,
-                            date: formattedDate
-                        })
-                    });
-
-                    const data = await res.json();
-                    const slotContainer = document.getElementById('slotContainer');
-                    const slotLegend = document.getElementById('slotLegend');
-
-                    // 🔹 Clear on every success
-                    slotContainer.innerHTML = '';
-                    slotLegend.innerHTML = `
-                            <div class="legend-item">
-                                <span class="dot green"></span> Slots available
-                            </div>
-                            <div class="legend-item">
-                                <span class="dot yellow"></span> Limited slots
-                            </div>
-                            <div class="legend-item">
-                                <span class="dot red"></span> Slots not available
-                            </div>
-                            `;
-
-                    data.slots.forEach(slot => {
-
-                        const div = document.createElement('input');
-                        div.classList.add('slot-box');
-
-                        const availability = slot.AVAIBILITY.toLowerCase();
-                        div.classList.add(availability);
-                        div.value = slot.SLOTS;
-
-                        // ❌ Red = not clickable
-                        if (availability === 'red') {
-                            slotContainer.appendChild(div);
-                            return;
-                        }
-
-                        // ✅ Green & Yellow clickable
-                        div.addEventListener('click', () => {
-
-                            document.querySelectorAll('.slot-box')
-                                .forEach(el => el.classList.remove('active'));
-
-                            div.classList.add('active');
-
-                            document.querySelector("#slot_time").value = div.value;
-
-                            console.log('Selected Slot:', slot.SLOTS);
-                        });
-
-                        slotContainer.appendChild(div);
-                    });
-
-                } catch (error) {
-
-                    alert(error.message);
-
-                }
-            }
-
-        }
-        console.log("view");
-        getsrlslotsdate();
-
-        document.addEventListener("click", function (e) {
-            const card = e.target.closest(".date-card");
-            const slotsubmit = e.target.closest('.slot_conformation');
-            if (card) {
-                console.log("this is present");
-                getsrlslotsdate();
-            }
-
-        });
-
-        
-        //this is the srldate submit
+        // Form submission validation
         const form = document.getElementById('srldateslot');
-
         form.addEventListener('submit', function (e) {
-
             const allslots = document.querySelectorAll('.slot-box');
-
-            const hasActive = Array.from(allslots).some(el =>
-                el.classList.contains('active')
-            );
+            const hasActive = Array.from(allslots).some(el => el.classList.contains('active'));
 
             if (!hasActive) {
-                e.preventDefault();   // ⛔ stop submit
+                e.preventDefault();
                 Swal.fire({
                     icon: 'warning',
                     title: 'Select a Time Slot',
                     text: 'Please select at least one time slot before continuing',
                     confirmButtonText: 'OK'
                 });
-                return; // ✅ VERY IMPORTANT
+                return;
             }
 
-            // ✅ DO NOTHING HERE
-            // Form will submit naturally and POST request will go
+            // Form will submit naturally
         });
-
-
-
-
-
-
     </script>
+
+   
+
+    
+
     <x-retailer.footer />

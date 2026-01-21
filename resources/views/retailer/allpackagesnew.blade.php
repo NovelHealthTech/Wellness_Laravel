@@ -118,7 +118,6 @@
                     </p>
 
 
-
                     <!-- Tests List -->
                     <ul class="test-features">
                         @foreach($tests as $index => $test)
@@ -144,10 +143,14 @@
     </div>
 
 
-    
-     @if(isset($redcliffitems))
-     <x-retailer.recliffcart   :redcliffcartitems="$redcliffitems" />
+     @if(isset($redcliffcartitems))
+     <x-retailer.recliffcart   :redcliffcartitems="$redcliffcartitems" />
      @endif
+    @if (isset($srlcartitems))
+    <x-retailer.srlcart :srlcartitems="$srlcartitems"/>
+        
+    @endif
+
 
     <x-retailer.footer />
     <script>

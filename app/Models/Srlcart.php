@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Srlcart extends Model
 {
     
-    protected $fillable = ["package_id","vendor_id","user_id"];
+
+    protected $fillable = ["package_id","vendor_id","user_id","price"];
 
 
 

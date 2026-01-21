@@ -5,7 +5,7 @@
             border-radius: 23px;
             width: 50%;
             /* fluid width on most screens */
-            max-width:961px;
+            max-width: 961px;
             /* caps width for large screens */
             margin: 0 auto;
             /* centers it horizontally */
@@ -29,8 +29,8 @@
         }
 
         /* =========================
-       RESPONSIVE BREAKPOINTS
-       ========================= */
+               RESPONSIVE BREAKPOINTS
+               ========================= */
 
         /* Tablets (medium screens) */
         @media (max-width: 992px) {
@@ -44,13 +44,14 @@
             }
         }
 
-        @media(min-width:1200px){
+        @media(min-width:1200px) {
 
-            .widget{
-                max-width:960px!important;
+            .widget {
+                max-width: 960px !important;
 
             }
         }
+
         /* Mobile screens */
         @media (max-width: 576px) {
             .widget {
@@ -73,27 +74,38 @@
     </style>
 @endpush
 
-<div class="widget container  d-flex justify-content-around gap-3 py-3 px-3 flex-wrap"data-aos="fade-up" data-aos-delay="300">
+<div class="widget container d-flex justify-content-around gap-3 py-3 px-3 flex-wrap" data-aos="fade-up"
+    data-aos-delay="300">
+
     <div class="col-md-2">
         <h5 class="text_grey">About Novel</h5>
         <ul class="list-unstyled pt-3 d-flex flex-column gap-3">
-            <li class="text_grey">ABOUT US</li>
-            <li class="text_grey">Careers</li>
-            <li class="text_grey">PRIVACY POLICIES</li>
-            <li class="text_grey">COPYRIGHT POLICIES</li>
-            <li class="text_grey">Gallery</li>
+            <li>
+                <a href="{{ route('about') }}" class="text-secondary text-decoration-none">ABOUT US</a>
+
+            </li>
+            {{-- <li class="text_grey">Careers</li> --}}
+            <a class="text-secondary text-decoration-none" href="{{ route('privacy_policy') }}" class="text_grey">PRIVACY POLICIES</a>
+            {{-- <li class="text_grey">COPYRIGHT POLICIES</li> --}}
+            {{-- <li class="text_grey">Gallery</li> --}}
         </ul>
     </div>
+
     <div class="col-md-2">
         <h5 class="text_grey">Services</h5>
-        <ul class="list-unstyled d-flex flex-column gap-3 ">
-            <li class="text_grey">Login</li>
-            <li class="text_grey">Our Services</li>
-            <li class="text_grey">Contact Us</li>
-            <li class="text_grey">Articles</li>
-            <li class="text_grey">FAQ</li>
+        <ul class="list-unstyled d-flex flex-column gap-3">
+            <li>
+                <a class="text-secondary text-decoration-none" href="{{ route('loginview') }}" class="text_grey">Login</a>
+            </li>
+            <li>
+                <a class="text-secondary text-decoration-none" href="{{ route('services') }}" class="text_grey">Our Services</a>
+            </li>
+            <a class="text-secondary text-decoration-none" href="{{ route('contact_us') }}">Contact Us</a>
+            {{-- <li class="text_grey">Articles</li>
+            <li class="text_grey">FAQ</li> --}}
         </ul>
     </div>
+
     <div class="col-md-2">
         <h5 class="text_grey">Doc-On-Call Time</h5>
         <ul class="list-unstyled pt-3 d-flex flex-column gap-3">
@@ -101,6 +113,7 @@
             <li class="text_grey">9:30 AM - 6:00 PM</li>
         </ul>
     </div>
+
     <div class="col-md-2 d-flex flex-column gap-3">
         <h5 class="text_grey">Contact Us</h5>
         <ul class="list-unstyled pt-3">
@@ -108,4 +121,5 @@
             <li class="text_grey">support@novelhealthtech.com</li>
         </ul>
     </div>
+
 </div>

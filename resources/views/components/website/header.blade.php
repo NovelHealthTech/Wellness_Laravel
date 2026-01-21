@@ -83,19 +83,19 @@
                     <a class="nav-link {{ request()->routeIs('about') ?'active':"" }}" href="{{ route("about") }}">About</a>
                 </li>
                 <hr>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('blog') }}" href="{{ route('blog') }}" >Blogs</a>
-                </li>
+                </li> --}}
                 <hr>
                 <li>
                     <a href="{{ route('loginview') }}" class="btn loginsignup_header me-2">Login/Signup</a>
                 </li>
                 <hr>
                 <li>
-                    <div>
+                    {{-- <div>
                         <img width="30px" src="{{ asset('images/languages (1).png') }}" alt="Languages">
                         <span>English</span>
-                    </div>
+                    </div> --}}
                 </li>
             </ul>
         </div>

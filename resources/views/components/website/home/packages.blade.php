@@ -103,8 +103,8 @@
 
         <!-- Buttons -->
         <div class="d-flex justify-content-center py-5 gap-3 align-items-center">
-            <button class="btn border border-dark px-5" style="border-radius:76px!important">₹499</button>
-            <x-website.button buttontext="Proceed to Pay" classname="btn btn-outline-primary py-2 px-3" />
+            {{-- <button class="btn border border-dark px-5" style="border-radius:76px!important">₹499</button> --}}
+            {{-- <x-website.button buttontext="Proceed to Pay" classname="btn btn-outline-primary py-2 px-3" /> --}}
         </div>
 
     </div>

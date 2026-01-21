@@ -46,7 +46,7 @@
         <h3>PAN INDIA COVERAGE</h3>
     </div>
 
-    <button class="btn">
+    {{-- <button class="btn">
         Join Our Team
-    </button>
+    </button> --}}
 </div>

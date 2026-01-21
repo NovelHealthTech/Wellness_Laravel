@@ -9,11 +9,12 @@ class Vendorpricenht extends Model
     protected $fillable = ['package_id',"vendor_id","nht_price","vendor_price","package_code"];
 
 
-   public function redcliffpackagename(){
+   public function package(){
 
     return $this->belongsTo(Newpackage::class,"package_id");
 
 
    }
+
 
 }

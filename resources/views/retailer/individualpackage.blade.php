@@ -419,25 +419,36 @@
 
                 <div class="vendors-list">
                     @if(isset($data['srl']))
-
-
-                        <a href="" class="vendor-option vendor_cart">
+                        <a href="{{ route('retailer.srl_cart') }}" class="vendor-option vendor_cart" data-package_id="{{ $package->id }}" data-vendor_id="{{$data["srl"]["vendor_id"]  }}">
                             <div class="vendor-info">
                                 <div class="vendor-initial">S</div>
                                 <div class="vendor-details">
                                     <span class="vendor-name">SRL Diagnostics</span>
                                 </div>
                             </div>
+                           
+                         @if (in_array($package->id,$srlpackage_ids))
+                           <i class="bi bi-trash"></i>
+                         @else
+
+                           <div class="delete_icon d-none" data-package_id={{ $package->id }} data-vendor_id="{{ $data["redcliff"]["vendor_id"] }}">
+                                <i class="bi bi-trash"></i>
+                           </div>
+
                             <div class="vendor-price-section">
                                 <span class="price-amount">₹{{ $data['srl']['price'] }}</span>
                             </div>
+                        @endif
+
+
+
+                         
+
                         </a>
                     @endif
 
                     @if(isset($data['redcliff']))
-                     
-
-
+                    
                           <a  href="{{ route('retailer.redcliffcart') }}" data-package_id={{ $package->id}}
                             data-vendor_id={{ $data["redcliff"]["vendor_id"] }}  class="vendor-option vendor_cart">
                             <div class="vendor-info">
@@ -493,13 +504,14 @@
 </div>
 
 
-  
+     @if(isset($redcliffcartitems))
+     <x-retailer.recliffcart   :redcliffcartitems="$redcliffcartitems" />
+     @endif
+
      
-
-     <x-retailer.recliffcart :redcliffcartitems="$redcliffitems" />
-    
- 
-
+     @if (isset($srlcartitems))
+      <x-retailer.srlcart   :srlcartitems="$srlcartitems" />
+     @endif
 
 <script>
     function toggleTests(packageId, el) {
@@ -542,13 +554,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await res.json();
 
-            if (res.ok && data.status === "success") {
+            if (res.ok && data.status == "success" && data.vendor=="redcliff") {
+
                 console.log("Redcliff Cart Data:", data.redcliffcart);
 
                vendorCart.querySelector(".delete_icon").classList.remove("d-none");
 
                vendorCart.querySelector(".vendor-price-section").classList.add("d-none");
-
 
                 // Update Redcliff cart badge
                 const count = data.redcliffcart.length;
@@ -557,14 +569,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (cart) cart.classList.remove("display_none");
                 
                  const badge = document.querySelector(".cart_badge_redcliff");
+                 
+                setTimeout(function () {
+                    window.location.href = "{{ route('retailer.allpackages') }}";
+                }, 1000); // 2000 ms = 2 seconds
 
                 if (badge) badge.innerText = count;
                 // Optional: show a success alert
                 if (typeof successalert === 'function') {
                     successalert(data);
                 }
-            } else {
+            } 
+            else if(res.ok && data.status=="success" && data.vendor=="srl")
+            {
+            console.log("Redcliff Cart Data:", data.srlcartitems);
+            vendorCart.querySelector(".delete_icon").classList.remove("d-none");
+            vendorCart.querySelector(".vendor-price-section").classList.add("d-none");
+
+
+            const count = data.srlcartitems.length;
+            const cart = document.querySelector(".srl_cart");
+              if (cart) cart.classList.remove("display_none");
+                
+                 const badge = document.querySelector(".cart_badge_srl");
+                   setTimeout(function () {
+                    window.location.href = "{{ route('retailer.allpackages') }}";
+                }, 1000); // 2000 ms = 2 seconds
+
+                if (badge) badge.innerText = count;
+                // Optional: show a success alert
+                if (typeof successalert === 'function') {
+                    successalert(data);
+                }
+
+
+
+
+            
+
+            }
+            
+            else {
+
                 console.error('Error updating cart:', data);
+
             }
 
         } catch (err) {

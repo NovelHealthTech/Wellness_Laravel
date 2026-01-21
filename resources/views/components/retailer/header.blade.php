@@ -145,19 +145,37 @@
         <div class="dropdown">
             <a href="#" class="user-menu d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown"
                 aria-expanded="false">
+
                 <span class="user-name">
                     {{ auth()->user()->name ?? 'Account' }}
                 </span>
 
                 <i class="fa-solid fa-chevron-down ms-2"></i>
+
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                <li>
-                    <a class="dropdown-item" href="#">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="ordersDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         Orders
                     </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('retailer.srl.orders') }}">
+                                SRL Orders
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="{{ route('retailer.redcliff.orders') }}">
+                                Redcliff Orders
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
 
                 <li>
                     <a class="dropdown-item" href="#">
