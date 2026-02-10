@@ -123,6 +123,7 @@
         <ul class="list-unstyled pt-3">
             <li class="text_grey">+0124-4278179</li>
             <li class="text_grey">support@novelhealthtech.com</li>
+            <a class="text_grey text-decoration-none" href="https://in.linkedin.com/company/novel-healthtech-solutions-pvt-ltd">Linked in</a>
         </ul>
     </div>
 
