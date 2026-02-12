@@ -163,9 +163,9 @@
 
                     <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
                         <li>
-                            <a class="dropdown-item" href="{{ route('retailer.srl.orders') }}">
+                            {{-- <a class="dropdown-item" href="{{ route('retailer.srl.orders') }}">
                                 SRL Orders
-                            </a>
+                            </a> --}}
                         </li>
 
                         <li>
