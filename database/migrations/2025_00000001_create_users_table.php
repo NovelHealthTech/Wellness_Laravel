@@ -17,8 +17,18 @@ return new class extends Migration
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
             $table->string('email')->unique();
+            $table->foreignId('role_id')
+                ->nullable()
+                ->after('email')
+                ->constrained('roles')
+                ->onDelete('set null');
             $table->string("image")->nullable();
             $table->string("mobile")->nullable();
+            $table->integer('otp')->nullable();           // ✅ Added
+            $table->date("dob")->nullable();              // ✅ Added
+            $table->string("gender")->nullable();         // ✅ Added
+            $table->boolean("is_loggedin")->nullable();   // ✅ Added
+            $table->boolean("is_active");
             $table->string("address")->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
@@ -32,7 +42,7 @@ return new class extends Migration
             $table->date("agreementexpirydate")->nullable();
             $table->string('registartioncertificatepdf')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
 
