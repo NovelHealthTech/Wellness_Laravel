@@ -17,10 +17,7 @@ return new class extends Migration
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
             $table->string('email')->unique();
-            $table->foreignId('role_id')
-                ->nullable()
-                ->constrained('roles')
-                ->onDelete('set null');
+            $table->integer("roles")->nullable();
             $table->string("image")->nullable();
             $table->string("mobile")->nullable();
             $table->integer('otp')->nullable();           // ✅ Added
