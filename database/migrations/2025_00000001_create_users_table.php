@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date("dob")->nullable();              // ✅ Added
             $table->string("gender")->nullable();         // ✅ Added
             $table->boolean("is_loggedin")->nullable();   // ✅ Added
-            $table->boolean("is_active");
+            $table->boolean("is_active")->nullable();
             $table->string("address")->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
@@ -49,6 +49,7 @@ return new class extends Migration
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
+
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
