@@ -174,13 +174,13 @@ body {
     <div class="brand-divider"></div>
 
     <div class="footer-socials">
-        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        {{-- <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a> --}}
         <a href="https://in.linkedin.com/company/novel-healthtech-solutions-pvt-ltd" target="_blank" class="social-icon">
             <i class="fab fa-linkedin-in"></i>
         </a>
-        <a href="mailto:support@novelhealthtech.com" class="social-icon">
+        {{-- <a href="mailto:support@novelhealthtech.com" class="social-icon">
             <i class="fas fa-envelope"></i>
-        </a>
+        </a> --}}
     </div>
 </div>
 
