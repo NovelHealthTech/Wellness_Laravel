@@ -1,78 +1,279 @@
 @push("styles")
-    <style>
-        .footer-title {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-            padding: 0 3rem;
-            /* adds left/right breathing space inside the whole section */
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
-        .footer-title::before,
-        .footer-title::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #ccc;
-        }
+/* ===== Sticky Footer Layout ===== */
+html, body { height: 100%; }
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+}
+.page-content { flex: 1 0 auto; }
 
-        .footer-title::before {
-            margin-right: 1.5em;
-            /* space between left line and text */
-        }
+/* ==========================================
+   FOOTER
+========================================== */
+.site-footer {
+    flex-shrink: 0;
+    background-color: #243665;   /* ← solid brand colour */
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
 
-        .footer-title::after {
-            margin-left: 1.5em;
-            /* space between text and right line */
-        }
+/* Force ALL text white */
+.site-footer,
+.site-footer * {
+    color: #ffffff !important;
+}
 
-        .footer-title h2 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: white;
-        }
+/* Top animated line */
+.site-footer::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #38bdf8, #06b6d4, #2563eb);
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
 
-        .social_links {
-            height: 48px !important;
-            width: 48px !important;
-        }
+/* Subtle glow orbs (kept light so they don't fight the flat bg) */
+.footer-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.06;
+}
+.footer-orb-1 {
+    width: 400px; height: 400px;
+    background: #2563eb;
+    top: -100px; right: -80px;
+}
+.footer-orb-2 {
+    width: 300px; height: 300px;
+    background: #06b6d4;
+    bottom: 0; left: -60px;
+}
 
-        .footer {
-            margin-top: -11%;
-            position: relative;
-            z-index: -1;
-            padding-top: 13%;
-            padding-bottom:5%;
-        
-        }
-    </style>
+/* Main content */
+.footer-main {
+    padding: 65px 0 50px;
+    position: relative;
+    z-index: 1;
+}
 
+/* Brand */
+.footer-brand-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: left;
+}
+.footer-tagline {
+    font-size: 0.9rem;
+    margin-top: 8px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* Divider */
+.brand-divider {
+    width: 40px;
+    height: 3px;
+    background: #ffffff;
+    border-radius: 2px;
+    margin: 18px 0;
+}
+
+/* Social Icons — slightly larger */
+.footer-socials {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.social-icon {
+    width: 44px;           /* ← was 38px */
+    height: 44px;          /* ← was 38px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: 0.3s;
+    font-size: 1.1rem;     /* ← icon glyph size */
+}
+.social-icon:hover {
+    background: #ffffff;
+    transform: translateY(-4px);
+}
+.social-icon:hover i {
+    color: #243665 !important;   /* icon turns brand-dark on hover */
+}
+
+/* Column Titles */
+.footer-col-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+/* Links */
+.footer-nav { list-style: none; padding: 0; margin: 0; }
+.footer-nav li { margin-bottom: 10px; text-align: left; }
+.footer-nav a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: padding-left 0.25s;
+}
+.footer-nav a:hover {
+    padding-left: 6px;
+    opacity: 0.85;
+}
+
+/* Info Rows */
+.footer-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+.footer-info-row i {
+    margin-top: 3px;       /* vertically aligns icon with first line of text */
+    flex-shrink: 0;
+}
+
+/* HR Divider */
+.footer-hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin: 0;
+}
+
+/* Bottom bar */
+.footer-bottom {
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.82rem;
+    opacity: 0.85;
+}
+.footer-bottom p { margin: 0; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-brand-name,
+    .footer-tagline,
+    .footer-col-title,
+    .footer-nav li {
+        text-align: center;
+    }
+    .footer-socials { justify-content: center; }
+    .brand-divider { margin: 18px auto; }
+    .footer-info-row { justify-content: center; }
+}
+</style>
 @endpush
-<x-website.footerwidget />
-<div class="bluegradient  footer" data-aos="fade-up" data-aos-duration="300">
 
-    <div class="footer-title container">
-        <h2>Novel Healthtech</h2>
+
+<footer class="site-footer">
+
+    <div class="footer-orb footer-orb-1"></div>
+    <div class="footer-orb footer-orb-2"></div>
+
+    <div class="footer-main">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- BRAND -->
+                <div class="col-12 col-lg-3 col-md-6">
+                    <div class="footer-brand-name">Novel <span>Healthtech</span></div>
+                    <p class="footer-tagline">Empowering healthcare<br>through technology</p>
+                    <div class="brand-divider"></div>
+
+                    <div class="footer-socials">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://in.linkedin.com/company/novel-healthtech-solutions-pvt-ltd" target="_blank" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="mailto:support@novelhealthtech.com" class="social-icon">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- COMPANY -->
+                <div class="col-6 col-lg-2 col-md-3">
+                    <p class="footer-col-title">Company</p>
+                    <ul class="footer-nav">
+                        <li><a href="{{ route('about') }}">About Us</a></li>
+                        <li><a href="{{ route('privacy_policy') }}">Privacy Policy</a></li>
+                        <li><a href="{{ route('refund_cancellation') }}">Refund & Cancellation</a></li>
+                        <li><a href="{{ route('terms_and_condition') }}">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+
+                <!-- QUICK LINKS -->
+                <div class="col-6 col-lg-2 col-md-3">
+                    <p class="footer-col-title">Quick Links</p>
+                    <ul class="footer-nav">
+                        <li><a href="{{ route('loginview') }}">Login</a></li>
+                        <li><a href="{{ route('services') }}">Our Services</a></li>
+                        <li><a href="{{ route('contact_us') }}">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- DOC-ON-CALL -->
+                <div class="col-6 col-lg-2 col-md-6">
+                    <p class="footer-col-title">Doc-On-Call</p>
+                    <div class="footer-info-row"><i class="fas fa-calendar-week"></i> Monday – Saturday</div>
+                    <div class="footer-info-row"><i class="fas fa-clock"></i> 9:30 AM – 6:00 PM</div>
+                </div>
+
+                <!-- CONTACT -->
+                <div class="col-6 col-lg-3 col-md-6">
+                    <p class="footer-col-title">Get In Touch</p>
+                    <div class="footer-info-row">
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+01244278179">+0124-4278179</a>
+                    </div>
+                    <div class="footer-info-row">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:support@novelhealthtech.com">support@novelhealthtech.com</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-center gap-3 mt-3">
-        <a href="">
-            <img class="social_links" src="{{ asset('images/website/footer/facebook.png') }}" alt="">
-        </a>
-        <a href="">
-            <img class="social_links" src="{{ asset('images/website/footer/linkedin (1).png') }}" alt="">
-        </a>
-        <a href="">
-            <img class="social_links" src="{{ asset('images/website/footer/youtube.png') }}" alt="">
-        </a>
+    <hr class="footer-hr">
 
+    <div class="container">
+        <div class="footer-bottom">
+            <p>© 2023 Novel HealthTech Solutions Private Limited. All rights reserved.</p>
+            <p>Content & images are copyright protected. Unauthorized use is prohibited and punishable by law.</p>
+        </div>
     </div>
-    <h5 style="font-weight:400" class="text-center text-white  my-3">Copyright © 2023 Novel HealthTech Solutions Private
-        Limited</h5>
-    <p class="text-center text-white mx-5">
-        The content and images used on this site are copyright protected and copyrights vests with the respective
-        owners. The usage of the content and images on this website is intended to promote the works and no endorsement
-        of the artist shall be implied. Unauthorized use is prohibited and punishable by law.
-    </p>
-</div>
+
+</footer>

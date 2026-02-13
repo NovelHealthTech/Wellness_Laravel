@@ -117,6 +117,8 @@ Route::middleware(['check.auth'])->group(function () {
 
     Route::name("retailer.")->group(function () {
 
+        Route::get("/open_wellness_page/{id}",[RetailerController::class,"wellness_page"])->name('wellnesspage');
+
         Route::get('/select-location/{eloc}', [RetailerController::class, 'getLocationDetails'])->name('location');
 
         Route::get("/retailer", [RetailerController::class, "retailerhomepage"])->name('retailerhomepage');
@@ -178,6 +180,7 @@ Route::middleware(['check.auth'])->group(function () {
         Route::get("/checking_payment_status_redcliffe/{transaction_id}/{booking_id}", [RetailerController::class, "checking_payment_status_redcliffe"])->name("checking_payment_status_redcliffe");
 
         Route::get("/Payment_and_finalbooking_controller", [RetailerController::class, "Payment_and_finalbooking_controller"])->name('Payment_and_finalbooking_controller');
+        
 
         Route::get("/invoice_generation", [InvoiceController::class, "generate"])->name('invoice');
         Route::get("/redcliff_orders",[RetailerController::class, "redcliff_retailer_orders"])->name('redcliff.orders');

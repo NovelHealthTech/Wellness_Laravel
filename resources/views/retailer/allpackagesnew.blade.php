@@ -77,7 +77,7 @@
     <!-- Header -->
     <div class="border-bottom py-4 mb-3">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ url('/') }}" class="fw-bold text-decoration-none text-dark">
+            <a href="{{ route('retailer.retailerhomepage') }}" class="fw-bold text-decoration-none text-dark">
                 <i class="bi bi-arrow-left"></i> Back to Home
             </a>
 

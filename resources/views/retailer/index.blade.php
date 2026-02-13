@@ -85,35 +85,35 @@
 <section class="service-section">
     <div class="service-wrapper">
 
-        <a href="#" class="service-item">
+         {{-- <a href="{{ route('retailer.wellnesspage',['id'=>"1"]) }}" class="service-item">
             <i class="fa-solid fa-user-doctor"></i>
-            <p>Talk to Doctor</p>
-        </a>
+            <p>Talk to Docto</p>
+        </a> --}}
 
-        <a href="#" class="service-item">
+        <a href="{{ route('retailer.wellnesspage',['id'=>"2"]) }}" class="service-item">
             <i class="fa-solid fa-pills"></i>
-            <p>Medicine</p>
-        </a>
+            <p>E-pharmacy</p>
+        </a> 
 
         <a href="{{ route('retailer.allpackages') }}" class="service-item">
             <i class="fa-solid fa-flask"></i>
             <p>Lab Tests & Packages</p>
         </a>
 
-        <a href="#" class="service-item">
+        {{-- <a href="#" class="service-item">
             <i class="fa-solid fa-calendar-check"></i>
             <p>Book Appointment</p>
-        </a>
+        </a> --}}
 
-        <a href="#" class="service-item">
+        {{-- <a href="#" class="service-item">
             <i class="fa-solid fa-hospital"></i>
             <p>Surgery</p>
-        </a>
+        </a> --}}
 
-        <a href="#" class="service-item gold">
+        {{-- <a href="#" class="service-item gold">
             <i class="fa-solid fa-crown"></i>
             <p>MediBuddy <span>Gold</span></p>
-        </a>
+        </a> --}}
     </div>
 </section>
 

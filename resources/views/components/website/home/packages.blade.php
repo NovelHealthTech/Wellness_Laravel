@@ -95,10 +95,10 @@
 
             <span><img class="add_image_icon" src="{{ asset('images/website/home/add.png') }}" alt="Add"></span>
 
-            <div class="card text-center p-3">
+            {{-- <div class="card text-center p-3">
                 <img class="package_image" src="{{ asset('images/website/home/package4.png') }}" alt="Package 4">
                 <p class="py-3 image_subheading">E-Pharmacy</p>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Buttons -->

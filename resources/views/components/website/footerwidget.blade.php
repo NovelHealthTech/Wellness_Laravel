@@ -4,6 +4,8 @@
             background-color: #F9F9F9;
             border-radius: 23px;
             width: 50%;
+            z-index: 3;
+            position: relative;
             /* fluid width on most screens */
             max-width: 961px;
             /* caps width for large screens */
@@ -123,7 +125,7 @@
         <ul class="list-unstyled pt-3">
             <li class="text_grey">+0124-4278179</li>
             <li class="text_grey">support@novelhealthtech.com</li>
-            <a class="text_grey text-decoration-none" href="https://in.linkedin.com/company/novel-healthtech-solutions-pvt-ltd">Linked in</a>
+           
         </ul>
     </div>
 

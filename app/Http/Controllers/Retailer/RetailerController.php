@@ -94,7 +94,7 @@ class RetailerController extends Controller
 
 
 
-                return back()->with(["status" => "failure", "message" => "we are no orderable at this placece", "error" => ""]);
+                return back()->with(["status" => "failure", "message" => "we are not orderable at this place", "error" => ""]);
 
             }
 
@@ -1198,9 +1198,146 @@ class RetailerController extends Controller
             ->where('collection_date', '>=', Carbon::now()->addHours(24))
             ->get();
 
-       
-    
-        return view('retailer.redcliff_order',compact('redclliffallorders'));
+
+
+        return view('retailer.redcliff_order', compact('redclliffallorders'));
+
+    }
+
+    public function wellness_page($id)
+    {
+
+        if ($id=="1") {
+
+            /***************************** Self Checks API Integrations ***********************/
+
+            // ✅ Static data + json_encode
+            $self_checks_body = json_encode([
+                "user_type" => "patient",
+                "target_url" => "https://www.mfine.co/channel/zoom-gen-sc",
+                "user_details" => [
+                    "mobile_number" => "917754093527",
+                    "firstname" => "Rohit",
+                    "lastname" => "Singh",
+                    "email" => "svksingh108@gmail.com",
+                ]
+            ]);
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => 'https://api.mfine.co/api/v1/silent-login',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,   // ✅ Fixed: was 0 (infinite hang)
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $self_checks_body,
+                CURLOPT_HTTPHEADER => [
+                    'client_id: zoom-gen-sc',
+                    'secret_key: Y8NzQcDvm9HIfFqc3CjQGCOQaTOHrn3aDWPxNDZr4Tbk0OL0zKk0iOmACwRx8Nfk',
+                    'Content-Type: application/json'
+                ],
+            ]);
+
+            $response_self_checks = curl_exec($curl);
+            curl_close($curl);
+
+            // ✅ Fixed: added null check to avoid crash if API fails
+            $self_checks_decoded = json_decode($response_self_checks);
+
+            if (!$self_checks_decoded || !isset($self_checks_decoded->redirect_url)) {
+                return back()->withErrors(['error' => 'Self Checks API failed: ' . $response_self_checks]);
+            }
+
+            $data['consultations'] = $self_checks_decoded->redirect_url;
+
+            // ✅ API Log
+            $self_checks_body_apilog = [
+                'mfine_service' => 'self_checks',
+                'request' => $self_checks_body,
+                'response' => $response_self_checks
+            ];
+
+          
+
+            // ✅ Fixed: added return so redirect actually executes
+            return redirect($data['consultations']);
+
+            /***************************** Self Checks API Integrations ***********************/
+        }
+
+        if ($id == 2) {
+
+            /***************************** E-Pharmacy API Integrations ***********************/
+
+            // ✅ Static data + proper variable name (avoid overwriting $data array)
+            $epharmacy_payload = json_encode([
+                "number" => "7754093527",   // ✅ Static number (no 91 prefix - 1mg uses plain number)
+                "merchant_key" => "a46ed817-ecb5-4f8d-80d1-4d73ad37e044",
+                "user_id" => "1",
+                "source" => "novelhealthtech",
+                "redirect_url" => "https://www.1mg.com"
+            ]);
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => 'https://api.1mg.com/api/v6/b2b/generate_hash',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,   // ✅ Fixed: was 0 (infinite hang)
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $epharmacy_payload,
+                CURLOPT_HTTPHEADER => [
+                    'X-Access-key: 1mg_client_access_key',
+                    'Content-Type: application/json'
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+
+            // ✅ Fixed: added null check to avoid crash if API fails
+            $response_data = json_decode($response);
+
+            if (!$response_data) {
+                return back()->withErrors(['error' => 'E-Pharmacy API failed. Invalid response.']);
+            }
+
+            // ✅ API Log (uncommented and cleaned up)
+            $apilog = [
+                'mfine_service' => 'e_pharmacy',
+                'request' => $epharmacy_payload,
+                'response' => $response
+            ];
+
+
+            if ($response_data->is_success == 1) {
+
+                // ✅ Fixed: $data['employee']->mobile replaced with static number
+                $data['consultations'] = 'https://www.1mg.com?merchant_token='
+                    . $response_data->data->hash
+                    . '&number=7754093527';
+
+                // ✅ Fixed: added return so redirect actually executes
+                return redirect($data['consultations']);
+
+            } else {
+
+                // ✅ Fixed: replaced CI3 session flash with Laravel session flash
+                return back()->with('error', 'Something went wrong while generating E-Pharmacy link. Please try again later.');
+            }
+
+            /***************************** E-Pharmacy API Integrations ***********************/
+        }
+
+
 
     }
 

@@ -27,7 +27,6 @@
                             <strong>novelhealthtech.com</strong> (“Website”), including the related mobile site and mobile
                             application (hereinafter referred to as “Platform”).
                         </p>
-
                         <p>
                             <strong>C.</strong> The Platform is owned by <strong>Novel Healthtech Solutions Pvt. Ltd.</strong>, a company
                             incorporated under the Companies Act, 1956 with its registered office at
