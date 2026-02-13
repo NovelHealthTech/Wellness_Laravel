@@ -18,19 +18,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin User',
+            'firstname' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
-            'role_id' => 1,
+            'roles' => 1,
             'is_active' => 1,
         ]);
 
         // Retailer User
         User::create([
-            'name' => 'Retailer User',
+            'firstname' => 'Retailer User',
             'email' => 'retailer@example.com',
             'password' => Hash::make('password'),
-            'role_id' => 2,
+            'roles' => 2,
             'is_active' => 1,
         ]);
 
