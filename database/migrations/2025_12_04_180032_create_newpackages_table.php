@@ -17,7 +17,7 @@ return new class extends Migration
            $table->string("price");  
            $table->string("discount");
            $table->string("image");
-           $table->string("package_code");
+          
            $table->boolean("status");
            $table->foreignId("vendor_id")->constrained("vendors");
            $table->string("description")->nullable();

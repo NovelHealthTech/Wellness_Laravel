@@ -240,6 +240,7 @@
                 </button>
             </div>
         </nav>
+        
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
             <!-- partial:partials/_sidebar.html -->
