@@ -24,13 +24,13 @@ class LoginController extends Controller
             $user = Auth::user();
 
 
-            if ($user->role_id == 1) {
+            if ($user->roles == 1) {
 
                 return redirect()->route("admindashboard");
 
             }
 
-            if ($user->role_id == 2 && $user->is_loggedin==1) {
+            if ($user->roles == 2 && $user->is_loggedin==1) {
 
                     
                 return redirect()->route("retailer.retailerhomepage");
