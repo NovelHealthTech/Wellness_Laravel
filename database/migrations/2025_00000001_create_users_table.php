@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->foreignId('role_id')
                 ->nullable()
-                ->after('email')
                 ->constrained('roles')
                 ->onDelete('set null');
             $table->string("image")->nullable();
