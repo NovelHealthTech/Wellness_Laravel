@@ -11,42 +11,33 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+
             // Make password nullable
             $table->string('password')->nullable()->change();
-            
-            // Add role_id column referencing roles table
-            $table->foreignId('role_id')
-                ->nullable()
-                ->after('email')
-                ->constrained('roles')
-                ->onDelete('set null');
 
-            // Add bank_id column referencing bankdetails table
-            $table->foreignId('bank_id')
-                ->nullable()
-                ->after('role_id')
-                ->constrained('bankdetails')
-                ->onDelete('set null');
+            // Add role_id only if not exists
+            if (!Schema::hasColumn('users', 'role_id')) {
+                $table->foreignId('role_id')
+                    ->nullable()
+                    ->after('email')
+                    ->constrained('roles')
+                    ->onDelete('set null');
+            }
 
-            $table->integer("is_active")->after('image')->nullable();
+            // Add bank_id only if not exists
+            if (!Schema::hasColumn('users', 'bank_id')) {
+                $table->foreignId('bank_id')
+                    ->nullable()
+                    ->after('role_id')
+                    ->constrained('bankdetails')
+                    ->onDelete('set null');
+            }
+
+            // Add is_active only if not exists
+            if (!Schema::hasColumn('users', 'is_active')) {
+                $table->integer("is_active")->after('image')->nullable();
+            }
         });
     }
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
 
-            // Safely drop foreign keys + columns
-            $table->dropConstrainedForeignId('role_id');
-            $table->dropConstrainedForeignId('bank_id');
-            // Make password NOT NULL again
-            $table->string('password')->nullable(false)->change();
-            // Drop is_active column
-            $table->dropColumn('is_active');
-            
-
-        });
-    }
 };
