@@ -11,6 +11,7 @@ use App\Models\Nhtorder as ModelsNhtorder;
 use App\Models\Redcliffcart;
 use App\Models\Srlcart;
 use App\Models\Srlorder;
+use App\Models\SurgicalAssistance;
 use App\Models\Vendor;
 use App\Models\Vendorpricenht;
 use Exception;
@@ -98,9 +99,6 @@ class RetailerController extends Controller
 
             }
 
-
-
-
         } catch (Exception $e) {
             return response()->json([
 
@@ -112,14 +110,8 @@ class RetailerController extends Controller
     }
 
 
-
-
     public function srldatesubmit(Request $request)
     {
-
-
-
-
         try {
             // ✅ FORMAT DATE EXACTLY LIKE CI
             $date = date("d-M-Y", strtotime($request->input('date')));
@@ -546,24 +538,20 @@ class RetailerController extends Controller
 
 
     }
-    public function individualpackage(Request $request)
+    public function individualpackage(Request $request, $id = null, $data = null)
     {
 
-        try {
 
+        try {
             $package_id = $request->id;
             $package = Newpackage::where("id", $package_id)->first();
             $vendordetails = Vendorpricenht::where("package_id", $package_id)->get();
             $recliffcartpackages_ids = Redcliffcart::pluck('package_id')->toArray();
             $redcliffcartitems = Redcliffcart::all();
-
             $srlpackage_ids = Srlcart::pluck("package_id")->toArray();
             $srlcartitems = Srlcart::all();
-
-
             $data = [];
             foreach ($vendordetails as $vendor) {
-
                 if ($vendor->vendor_id == "1") {
 
                     $data["redcliff"] = ["package_id" => $vendor->package_id, "price" => $vendor->nht_price, "package_code" => $vendor->package_code, "vendor_id" => $vendor->vendor_id];
@@ -577,8 +565,6 @@ class RetailerController extends Controller
                     $data["tata1mg"] = ["package_id" => $vendor->package_id, "price" => $vendor->nht_price, "package_code" => $vendor->package_code, "vendor_id" => $vendor->vendor_id];
 
                 }
-
-
             }
 
 
@@ -586,8 +572,6 @@ class RetailerController extends Controller
 
 
         } catch (Exception $e) {
-
-
 
         }
 
@@ -797,7 +781,7 @@ class RetailerController extends Controller
             $longitude = $request->longitude;
             $pincode = $request->redcliffpincode;
             $collection_date = $request->redcliffdate;
-            $collection_slot_id = $request->timeSlot;
+            $collection_slot_id = $request->redcliffslot;
 
             return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id'));
 
@@ -816,63 +800,41 @@ class RetailerController extends Controller
     public function red_cliffe_order_placed(Request $request)
     {
         try {
-
             $package_ids = Redcliffcart::where("user_id", Auth()->user()->id)->pluck('package_id');
 
-            // $exists = Customer_order::where('user_id', Auth::id())
-            //     ->whereDate('booking_date', $request->booking_date)
-            //     ->where("collection_date", $request->collection_date)
-            //     ->where(function ($query) use ($package_ids) {
-            //         foreach ($package_ids as $packageId) {
-            //             $query->orWhereJsonContains('customer_packages', $packageId);
-            //         }
-            //     })
-            //     ->exists();
+            $order_data = [];
 
+            foreach ($request->patients as $patient) {
+                $order_data[] = [
+                    'user_id' => Auth::user()->id,
+                    'collection_slot_id' => $request->collection_slot_id,
+                    'booking_id' => 0,
+                    'pk' => 0,
+                    'customer_name' => $patient['name'],           // ✅ from patient
+                    'customer_gender' => $patient['gender'],         // ✅ from patient
+                    'customer_phonenumber' => $patient['phone'],          // ✅ from patient
+                    'customer_whatsappnumber' => $patient['whatsapp'],       // ✅ from patient
+                    'customer_age' => $patient['age'],            // ✅ from patient
+                    'customer_packages' => $package_ids,
+                    'booking_date' => $patient['booking_date'],   // ✅ from patient
+                    'collection_date' => $patient['collection_date'],// ✅ from patient
+                    'pincode' => $patient['pincode'],        // ✅ from patient
+                    'customer_address' => $patient['address'],        // ✅ from patient
+                    'customer_landmark' => $patient['landmark'],       // ✅ from patient
+                    'customer_latitude' => $request->customer_latitude,
+                    'customer_longitude' => $request->customer_longitude,
+                    'status' => 0,
+                    'is_payment' => 0,
+                    'is_credit' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
 
-
-            // if ($exists) {
-
-
-            //     return redirect()->route('retailer.allpackages')
-
-            //         ->with(["status" => "failure", "message" => "One or more selected packages are already booked for this date."]);
-
-            // }
-
-
-            $order_data = [
-
-                'user_id' => Auth::user()->id, // Laravel way to get logged-in user ID
-                'collection_slot_id' => $request->collection_slot_id,
-                'booking_id' => 0, // Set default or get from API response later
-                'pk' => 0, // Set default or get from API response later
-                'customer_name' => $request->customer_name,
-                'customer_gender' => $request->customer_gender,
-                'customer_phonenumber' => $request->customer_phonenumber,
-                'customer_whatsappnumber' => $request->customer_whatsappnumber,
-                'customer_age' => $request->customer_age,
-                "customer_packages" => $package_ids,
-                'booking_date' => $request->booking_date,
-                'collection_date' => $request->collection_date,
-                'pincode' => $request->pincode,
-                'customer_address' => $request->customer_address,
-                'customer_landmark' => $request->customer_landmark,
-                'customer_latitude' => $request->customer_latitude,
-                'customer_longitude' => $request->customer_longitude,
-                'status' => 0,
-                'is_payment' => 0,
-                'is_credit' => true,
-
-            ];
-
-            $order = Customer_order::create($order_data);
-
-
-
-
+            // ✅ insert() for multiple rows at once
+           $order= Customer_order::insert($order_data);
+           
             if ($order) {
-
                 $inserted_id = $order->id;
                 $totalPrice = (int) Redcliffcart::where('user_id', Auth::id())->sum('price');
                 // 2️⃣ Prepare order data
@@ -894,6 +856,7 @@ class RetailerController extends Controller
                 Customer_order::where("id", $inserted_id)->update([
                     "nht_order_id" => $nhtorderid,
                 ]);
+
 
 
                 $package_codes = Vendorpricenht::whereIn(
@@ -1016,8 +979,9 @@ class RetailerController extends Controller
             }
         } catch (Exception $e) {
 
-            return back()->with(["status" => "failure", "message" => $e->getMessage()]);
+            Log::error("error", ["message" => $e->getMessage()]);
 
+            ;
         }
 
     }
@@ -1207,7 +1171,7 @@ class RetailerController extends Controller
     public function wellness_page($id)
     {
 
-        if ($id=="1") {
+        if ($id == "1") {
 
             /***************************** Self Checks API Integrations ***********************/
 
@@ -1261,7 +1225,7 @@ class RetailerController extends Controller
                 'response' => $response_self_checks
             ];
 
-          
+
 
             // ✅ Fixed: added return so redirect actually executes
             return redirect($data['consultations']);
@@ -1341,5 +1305,250 @@ class RetailerController extends Controller
 
     }
 
+    public function doc_on_call()
+    {
 
+        return view('retailer.doc_on_call');
+
+
+    }
+
+    public function epharmacy()
+    {
+
+        // ✅ Static data + proper variable name (avoid overwriting $data array)
+        $epharmacy_payload = json_encode([
+            "number" => "7754093527",   // ✅ Static number (no 91 prefix - 1mg uses plain number)
+            "merchant_key" => "a46ed817-ecb5-4f8d-80d1-4d73ad37e044",
+            "user_id" => "1",
+            "source" => "novelhealthtech",
+            "redirect_url" => "https://www.1mg.com"
+        ]);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.1mg.com/api/v6/b2b/generate_hash',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,   // ✅ Fixed: was 0 (infinite hang)
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $epharmacy_payload,
+            CURLOPT_HTTPHEADER => [
+                'X-Access-key: 1mg_client_access_key',
+                'Content-Type: application/json'
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        // ✅ Fixed: added null check to avoid crash if API fails
+        $response_data = json_decode($response);
+
+        if (!$response_data) {
+            return back()->withErrors(['error' => 'E-Pharmacy API failed. Invalid response.']);
+        }
+
+        // ✅ API Log (uncommented and cleaned up)
+        $apilog = [
+            'mfine_service' => 'e_pharmacy',
+            'request' => $epharmacy_payload,
+            'response' => $response
+        ];
+
+
+        if ($response_data->is_success == 1) {
+
+            // ✅ Fixed: $data['employee']->mobile replaced with static number
+            $data['consultations'] = 'https://www.1mg.com?merchant_token='
+                . $response_data->data->hash
+                . '&number=7754093527';
+
+            // ✅ Fixed: added return so redirect actually executes
+            return redirect($data['consultations']);
+
+        } else {
+
+            // ✅ Fixed: replaced CI3 session flash with Laravel session flash
+            return back()->with('error', 'Something went wrong while generating E-Pharmacy link. Please try again later.');
+        }
+
+        /***************************** E-Pharmacy API Integrations ***********************/
+    }
+
+
+
+    public function surgical_view()
+    {
+
+        return view('retailer.surgical_assistance');
+
+    }
+    public function surgical_assistance_form(Request $request)
+    {
+
+
+        // ── Validation ────────────────────────────────────────────
+        $request->validate([
+            'patient_name' => 'required|string|max:100',
+            'mobile_number' => 'required|digits:10',
+            'city' => 'required|string|max:100',
+            'disease' => 'required|string|max:100',
+        ]);
+
+
+        SurgicalAssistance::create([
+            "user_id" => auth()->user()->id,
+            "patient_name" => $request->patient_name,
+            "patient_mobile" => $request->mobile_number,
+            "patient_city" => $request->city,
+            "patient_disease" => $request->disease,
+            "status" => 1,
+        ]);
+
+        // // ── Insert lead into DB ───────────────────────────────────
+        // DB::table('pristyne_care_leads')->insert([
+        //     'emp_id' => $employee->id,
+        //     'cmp_id' => $employee->company_id,
+        //     'emp_name' => $employee->full_name,
+        //     'cmp_name' => $company->comp_name,
+        //     'mobile' => $request->mobile_number,
+        //     'firstname' => $request->patient_name,
+        //     'disease' => $request->disease,
+        //     'city' => $request->city,
+        //     'status_message' => 'New Lead Generated',
+        //     'status' => 1,
+        //     'source' => 'ONLINE',
+        //     'sales_under' => 'ZOOM CONNECT',
+        //     'lead_generated_date' => now(),
+        // ]);
+
+        // // ── Send internal alert email ─────────────────────────────
+        // Mail::send(new SurgeryAlertMail([
+        //     'employee_name' => $employee->full_name,
+        //     'employee_email' => $employee->email,
+        //     'employee_mobile' => $employee->mobile,
+        //     'cmp_name' => $company->comp_name,
+        //     'mobile' => $request->mobile_number,
+        //     'firstname' => $request->patient_name,
+        //     'disease' => $request->disease,
+        //     'city' => $request->city,
+        // ]));
+        // ── Call Pristyne Care external API ───────────────────────
+        $payload = [
+            'Mobile' => $request->mobile_number,
+            'FirstName' => $request->patient_name,
+            'source' => 'ZoomBrokers',
+            'disease' => $request->disease,
+            'City' => $request->city,
+        ];
+
+        $response = Http::withHeaders([
+            'X-Parse-Application-Id' => '677129e8e28d3edd43ea0b54da83bfd8ed1c6ca7',
+            'Content-Type' => 'application/json',
+        ])->post('https://pristinecare.app/parse/functions/createLeadFromZoomBrokers', $payload);
+
+        // ── Log API request & response ────────────────────────────
+        Log::channel('pristyne_care')->info('Pristyne Care API', [
+            'wellness_service' => 'Pristyne Care',
+            'request' => $payload,
+            'response' => $response->body(),
+        ]);
+
+        // ── Redirect with flash message ───────────────────────────
+        if ($response->json('result.status') === 1) {
+
+            return redirect()->route('retailer.retailerhomepage')
+                ->with(["success" => true, "message" => "Your form submitted successfully"]);
+        }
+
+        return redirect()->route('retailer.retailerhomepage')
+            ->with('error', 'Something Went Wrong! Please Try Again');
+    }
+
+    public function checkavailability(Request $request)
+    {
+        $pincode = $request->input('pincode');
+        $city = $request->input('city');
+        $location = $request->input('location');
+        $packageId = $request->input('package_id');
+        $result = [];
+
+        $token = "db32296dee3e80d5c1fba27ce9d0e3acaf58e51ccbdb40e8ceed15683d335e93";
+
+        // --- SRL Check ---
+        $srlResponse = Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://apiuat.agilus.in/GetCities/GetServiceableStatus', [
+                "header" => ["Token" => $token],
+                "body" => ["Pincode" => $pincode, "Source" => "SHT"],
+            ])->json();
+
+        if ($srlResponse["RSP_CODE"] == 100 && $srlResponse["RSP_DESC"] == "Query Successful") {
+            $result[] = [
+                "vendor" => "srl",
+                "status" => true,
+                "package_id" => $packageId,
+                "pincode" => $pincode,
+                "city" => $city,
+                "location" => $location,
+            ];
+        } else {
+            $result[] = [
+                "vendor" => "srl",
+                "status" => false,
+                "package_id" => $packageId,
+                "pincode" => $pincode,
+                "city" => $city,
+                "location" => $location,
+            ];
+        }
+
+        // --- Redcliff Check ---
+        $redcliffResponse = Http::withHeaders([
+            'key' => "pW2woxd83m29ihJUlIRM9oxKnylbPt4a",
+            'Accept' => 'application/json',
+        ])->get('https://api.redcliffelabs.com/api/partner/v2/get-partner-location-2-eloc/', [
+                    'place_query' => "$location $city $pincode",
+                ])->json();
+
+
+        if ($redcliffResponse["status"] == "Success") {
+            $result[] = [
+                "vendor" => "redcliff",
+                "status" => true,
+                "package_id" => $packageId,
+                "pincode" => $pincode,
+                "city" => $city,
+                "location" => $location,
+            ];
+        } else {
+            $result[] = [
+                "vendor" => "redcliff",
+                "status" => false,
+                "package_id" => $packageId,
+                "pincode" => $pincode,
+                "city" => $city,
+                "location" => $location,
+            ];
+        }
+
+        return response()->json([
+            "status" => true,
+            "redirect" => route('retailer.individual_package', [
+                'id' => $packageId,
+                'data' => urlencode(json_encode($result)),
+            ]),
+        ]);
+    }
 }
+
+
+
+
+
+
+

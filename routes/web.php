@@ -46,28 +46,28 @@ Route::get("/blogs", function () {
 })->name('blog');
 
 
-Route::get("/contact_us",function(){
- 
-return view('website.contact_us');
+Route::get("/contact_us", function () {
+
+    return view('website.contact_us');
 
 })->name('contact_us');
 
-Route::get("/privacy_policy",function(){
- 
-return view('website.privacy_policy');
+Route::get("/privacy_policy", function () {
+
+    return view('website.privacy_policy');
 
 })->name('privacy_policy');
 
-Route::get("/CANCELLATION",function(){
+Route::get("/CANCELLATION", function () {
 
-return view('website.refund_and_cancellation');
+    return view('website.refund_and_cancellation');
 
 })->name('refund_cancellation');
 
 
-Route::get("/terms_and_condition",function(){
+Route::get("/terms_and_condition", function () {
 
-  return view('website.terms_and_condition');
+    return view('website.terms_and_condition');
 
 })->name('terms_and_condition');
 
@@ -117,16 +117,15 @@ Route::middleware(['check.auth'])->group(function () {
 
     Route::name("retailer.")->group(function () {
 
-        Route::get("/open_wellness_page/{id}",[RetailerController::class,"wellness_page"])->name('wellnesspage');
+        Route::get("/open_wellness_page/{id}", [RetailerController::class, "wellness_page"])->name('wellnesspage');
 
         Route::get('/select-location/{eloc}', [RetailerController::class, 'getLocationDetails'])->name('location');
 
         Route::get("/retailer", [RetailerController::class, "retailerhomepage"])->name('retailerhomepage');
 
-        Route::get("/individualpackage/{id}", [RetailerController::class, "individualpackage"])->name('individual_package');
-
+        Route::get("/individualpackage/{id?}", [RetailerController::class, "individualpackage"])->name('individual_package');
+        
         Route::get("/allpackages", [RetailerController::class, "allpackages"])->name('allpackages');
-
         //routes for the srl
         Route::post("/srlcartopen", [RetailerController::class, "srlcartopen"])->name('srl_cart');
         Route::get("/pincodesubmit", [RetailerController::class, "srlpincodesubmit"])->name('srlpincode.post');
@@ -138,67 +137,49 @@ Route::middleware(['check.auth'])->group(function () {
             return view('retailer.srlinfo_form');
         })->name('srlinfo_form');
 
-       Route::get("/checking_payment_status_sr/{transaction_id}",[RetailerController::class, "checking_payment_status_for_srl"])->name('checking_payment_status_srl');
+        Route::get("/checking_payment_status_sr/{transaction_id}", [RetailerController::class, "checking_payment_status_for_srl"])->name('checking_payment_status_srl');
 
 
         //this is for the redcliff
-
         Route::post("/srlformsubmit", [RetailerController::class, "srlformsubmit"])->name("srlformsubmit");
 
         Route::post("/redcliffpincodesubmit", [RetailerController::class, "redcliffpincodesubmit"])->name('redcliffpincode.post');
 
-        // Route::get("/srlcartview", function () {
-
-        
-        //     return view('retailer.srlcartview', compact('srlcartitems'));
-
-        // })->name('srlcartview');
-
-        Route::get("/srlcartview",[RetailerController::class,"srlcartview"])->name('srlcartview');
-
-
-
-    
-
+        Route::get("/srlcartview", [RetailerController::class, "srlcartview"])->name('srlcartview');
         Route::get("/payment_cheking", [RetailerController::class, "checking_payment_status_for_srl"])->name('checking_payment_status_for_srl');
-
         //this is for the redcliff
-
         Route::post("/redcliffcart", [RetailerController::class, "redcliffcart"])->name('redcliffcart');
-
         Route::get("/redcliffcartview", [RetailerController::class, "redcliffcartview"])->name('redcliffcartview');
-
         Route::post("/redcliffdate", [RetailerController::class, "redcliffdates"])->name("redcliffdate.post");
-
         Route::post("/redclifftimeslotsubmit", [RetailerController::class, "redclifftimeslotsubmit"])->name('redclifftimeslotsubmit');
-
         Route::get("/redcliffbookingdetail", [RetailerController::class, "redcliffbookingdetailview"])->name('redcliffbookingdetailview');
-
         Route::post("/red_cliffe_order_placed", [RetailerController::class, "red_cliffe_order_placed"])->name('red_cliffe_order_placed');
 
         //this is for the payment
         Route::get("/checking_payment_status_redcliffe/{transaction_id}/{booking_id}", [RetailerController::class, "checking_payment_status_redcliffe"])->name("checking_payment_status_redcliffe");
-
         Route::get("/Payment_and_finalbooking_controller", [RetailerController::class, "Payment_and_finalbooking_controller"])->name('Payment_and_finalbooking_controller');
-        
-
         Route::get("/invoice_generation", [InvoiceController::class, "generate"])->name('invoice');
-        Route::get("/redcliff_orders",[RetailerController::class, "redcliff_retailer_orders"])->name('redcliff.orders');
+        Route::get("/redcliff_orders", [RetailerController::class, "redcliff_retailer_orders"])->name('redcliff.orders');
+
+
+        //this is for the doc-on-call
+        Route::get("/doc_on_call", [RetailerController::class, "doc_on_call"])->name("doc_on_call");
+
+        //for the e-pharmacy
+        Route::get("/Epharmacy", [RetailerController::class, "epharmacy"])->name("epharmacy");
     });
 
+    //this is for the surgical assistance
+    Route::get("/surgical_assitance", [RetailerController::class, "surgical_view"])->name('retailer.surgical_assistance');
+    Route::post("/sugical_assistance_submit", [RetailerController::class, "surgical_assistance_form"])->name("retailer.surgical_assistance_form_submit");
 
-
+    Route::post("/checkavailability", [RetailerController::class, "checkavailability"])->name("retailer.checkavailability");
 });
 
-
+Route::get("/invoice_generation", [InvoiceController::class, "generate"])->name('invoice');
 Route::get("/invoice", function () {
 
-
-    
-
     return view('retailer.invoice');
-
-    
 });
 
 Route::get("/getlogs", function () {

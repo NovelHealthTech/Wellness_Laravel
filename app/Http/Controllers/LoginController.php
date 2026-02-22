@@ -22,8 +22,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
 
             $user = Auth::user();
-
-
+    
             if ($user->roles == 1) {
 
                 return redirect()->route("admindashboard");
@@ -32,14 +31,11 @@ class LoginController extends Controller
 
             if ($user->roles == 2 && $user->is_loggedin==1) {
 
-                    
                 return redirect()->route("retailer.retailerhomepage");
+
             }
 
-
-
             return redirect()->route("admindashboard");
-
 
         } else {
             return back()->with(["failure" => "Invalid Credentials"]);

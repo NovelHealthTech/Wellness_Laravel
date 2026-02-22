@@ -216,9 +216,7 @@ body {
                         <a href="https://in.linkedin.com/company/novel-healthtech-solutions-pvt-ltd" target="_blank" class="social-icon">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        {{-- <a href="mailto:support@novelhealthtech.com" class="social-icon">
-                            <i class="fas fa-envelope"></i>
-                        </a> --}}
+                        {{-- ` --}}
                     </div>
                 </div>
 
@@ -232,7 +230,7 @@ body {
                         <li><a href="{{ route('terms_and_condition') }}">Terms & Conditions</a></li>
                     </ul>
                 </div>
-
+    
                 <!-- QUICK LINKS -->
                 <div class="col-6 col-lg-2 col-md-3">
                     <p class="footer-col-title">Quick Links</p>

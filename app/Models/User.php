@@ -11,8 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasRoles;
-    
+    use HasFactory, Notifiable, HasRoles;
+
 
     /**
      * The attributes that are mass assignable.
@@ -58,6 +58,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function surgical_assistance()
+    {
+
+        return $this->hasMany(SurgicalAssistance::class, "user_id");
+
+
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -70,4 +78,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
 }
