@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->string('user_id_on_phonepe');
             $table->string('phone_pe_merchant_id');
             $table->string('phone_pe_transaction_id');
-           
             $table->string('payment_status');
             $table->integer('amount_in_paise');
             $table->timestamps();

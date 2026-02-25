@@ -38,7 +38,7 @@
   .section-label { font-family:var(--font); font-size:11.5px; font-weight:700; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:20px; }
   .section-label strong { color:var(--navy); }
 
-  /* PATIENT CARD — unchanged */
+  /* PATIENT CARD */
   .patient-card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:28px; box-shadow:var(--shadow); margin-bottom:20px; animation:fadeUp .3s ease; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
   .patient-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; padding-bottom:16px; border-bottom:1px solid var(--border); }
@@ -73,11 +73,14 @@
   .tests-list { padding:8px 0; max-height:240px; overflow-y:auto; }
   .tests-list::-webkit-scrollbar { width:4px; }
   .tests-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-  .test-item { display:flex; align-items:center; gap:10px; padding:9px 20px; border-bottom:1px solid #f8fafc; transition:.15s; }
+
+  /* ✅ FIXED: test item layout with price aligned right */
+  .test-item { display:flex; align-items:center; gap:10px; padding:10px 20px; border-bottom:1px solid #f1f5f9; transition:.15s; }
   .test-item:last-child { border-bottom:none; }
   .test-item:hover { background:var(--teal-l); }
   .test-dot { width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0; }
-  .test-name { font-size:13px; color:var(--slate); line-height:1.4; }
+  .test-name { font-size:13px; color:var(--slate); line-height:1.4; flex:1; }
+  .test-price { font-family:var(--font); font-weight:700; color:var(--teal-d); font-size:13px; white-space:nowrap; background:var(--teal-l); padding:3px 9px; border-radius:6px; border:1px solid #ccfbf1; }
 
   .summary-row { display:flex; justify-content:space-between; align-items:center; padding:13px 22px; border-bottom:1px solid var(--border); font-size:14px; color:var(--slate); }
   .summary-row:last-child { border-bottom:none; }
@@ -143,23 +146,25 @@
           <!-- ══ RIGHT: Tests + Price ══ -->
           <div class="right-panel">
 
-            {{-- Tests Included --}}
             @php
-              $tests = json_decode($package->description ?? '{}', true)['tests'] ?? [];
-              $testCount = count($tests);
-              $price = $package->nht_price ?? 0;
+              $packages=$redcliffcart_items;
+              $package_count = count($redcliffcart_items);
+              $price = $redcliffcart_items->sum("price");
             @endphp
 
+            {{-- Packages Included --}}
             <div class="summary-card">
               <div class="card-head">
-                <div class="card-head-title"><i class="bi bi-clipboard2-pulse me-2" style="color:var(--teal)"></i>Tests Included</div>
-                <span class="card-head-badge">{{ $testCount }} tests</span>
+                <div class="card-head-title"><i class="bi bi-clipboard2-pulse me-2" style="color:var(--teal)"></i>Packages included</div>
+                <span class="card-head-badge">{{ $package_count }} Packages</span>
               </div>
               <div class="tests-list">
-                @forelse($tests as $test)
+                @forelse($packages as $item)
                   <div class="test-item">
                     <div class="test-dot"></div>
-                    <span class="test-name">{{ $test }}</span>
+                    {{-- ✅ FIXED: name takes flex:1, price has its own styled badge --}}
+                    <span class="test-name">{{ $item->package->packagename }}</span>
+                    <span class="test-price">₹{{ number_format($item->price) }}</span>
                   </div>
                 @empty
                   <div class="test-item"><span class="test-name" style="color:var(--muted);">No tests listed.</span></div>
@@ -172,9 +177,8 @@
               <div class="card-head dark">
                 <div class="card-head-title">Price Summary</div>
               </div>
-              <div class="summary-row"><span>Price per Patient</span><span class="val">₹{{ number_format($price) }}</span></div>
+              <div class="summary-row"><span>Price per patient</span><span class="val">₹{{ number_format($price) }}</span></div>
               <div class="summary-row"><span>No. of Patients</span><span class="val" id="sumPatients">1</span></div>
-              <div class="summary-row"><span>Total Tests</span><span class="val" id="sumTests">{{ $testCount }}</span></div>
               <div class="summary-row total"><span>Total Amount</span><span class="val" id="sumAmount">₹{{ number_format($price) }}</span></div>
 
               <button type="submit" class="confirm-btn">
@@ -205,8 +209,7 @@ let count = 0;
 const BOOKING_DATE    = "{{ date('Y-m-d') }}";
 const COLLECTION_DATE = "{{ $collection_date }}";
 const PINCODE         = "{{ $pincode }}";
-const BASE_PRICE      = {{ $package->nht_price ?? 0 }};
-const BASE_TESTS      = {{ count($tests) }};
+const BASE_PRICE      = {{ $price }}; // ✅ FIXED: BASE_PRICE defined so total amount calculates correctly
 
 {{-- ✅ Exact same addPatient function with same field names --}}
 function addPatient() {
@@ -293,12 +296,11 @@ function removePatient(n) {
   updateCount();
 }
 
-{{-- ✅ updateCount now also updates right panel summary --}}
+// ✅ FIXED: removed broken sumTests reference, total = BASE_PRICE * patient count
 function updateCount() {
   const n = document.querySelectorAll('.patient-card').length;
   document.getElementById('countLabel').textContent  = `${n} added`;
   document.getElementById('sumPatients').textContent = n;
-  document.getElementById('sumTests').textContent    = BASE_TESTS * n;
   document.getElementById('sumAmount').textContent   = '₹' + (BASE_PRICE * n).toLocaleString('en-IN');
 }
 

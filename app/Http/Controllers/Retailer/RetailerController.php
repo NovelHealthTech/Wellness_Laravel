@@ -461,9 +461,7 @@ class RetailerController extends Controller
             }
 
 
-
         }
-
 
 
     }
@@ -471,14 +469,11 @@ class RetailerController extends Controller
 
     public function srlcartopen(Request $request)
     {
-
         $redcliffcartremove = Redcliffcart::where("package_id", $request->package_id)->delete();
-
 
         try {
             $package_id = $request->input('package_id');
             $vendor_id = $request->input('vendor_id');
-
             if (!$package_id || !$vendor_id) {
                 return response()->json([
                     'status' => 'error',
@@ -497,10 +492,8 @@ class RetailerController extends Controller
                 "price" => $vendornhtprice->nht_price,
             ]);
 
-
             //this is correct
             $srlitems = Srlcart::all();
-
 
             return response()->json([
                 'status' => 'success',
@@ -651,6 +644,7 @@ class RetailerController extends Controller
         return view("retailer.redcliffcartview", compact('redcliffcartitems'));
 
     }
+
     public function getLocationDetails($eloc, Request $request)
     {
 
@@ -774,7 +768,6 @@ class RetailerController extends Controller
 
     public function redclifftimeslotsubmit(Request $request)
     {
-
         try {
 
             $latitude = $request->latitude;
@@ -782,8 +775,9 @@ class RetailerController extends Controller
             $pincode = $request->redcliffpincode;
             $collection_date = $request->redcliffdate;
             $collection_slot_id = $request->redcliffslot;
-
-            return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id'));
+            $redcliffcart_items=Redcliffcart::where("user_id",auth()->user()->id)->get();
+            
+            return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id','redcliffcart_items'));
 
 
         } catch (ValidationException $e) {
@@ -799,6 +793,7 @@ class RetailerController extends Controller
 
     public function red_cliffe_order_placed(Request $request)
     {
+
         try {
             $package_ids = Redcliffcart::where("user_id", Auth()->user()->id)->pluck('package_id');
 
@@ -831,60 +826,115 @@ class RetailerController extends Controller
                 ];
             }
 
-            // ✅ insert() for multiple rows at once
-           $order= Customer_order::insert($order_data);
-           
-            if ($order) {
-                $inserted_id = $order->id;
+
+
+            $insertedIds = [];
+
+            foreach ($order_data as $data) {
+                $order = Customer_order::create($data);
+                $insertedIds[] = $order->id;
+            }
+
+
+
+            if (!empty($insertedIds)) {
+
                 $totalPrice = (int) Redcliffcart::where('user_id', Auth::id())->sum('price');
-                // 2️⃣ Prepare order data
-                $order_data = [
-                    "user_id" => Auth::id(),
+
+
+
+                $nht_order_data = [
+                    "user_id" => auth()->user()->id,
                     "user_id_on_phonepe" => "NHT-" . Auth::id(),
                     "phone_pe_merchant_id" => "M1VPZ8VOW6UH",
                     "phone_pe_transaction_id" => strtoupper($this->generateUniqueTrstID(10)),
                     "amount_in_paise" => $totalPrice * 100, // If price is in ₹, multiply by 100
                     "payment_status" => "PAYMENT INITIATED",
-                    "customer_id" => $inserted_id,
+                    "customer_ids" => json_encode($insertedIds),
                 ];
 
+                try {
+                    $ordernht = NhtOrder::create($nht_order_data);
 
-                $ordernht = NhtOrder::create($order_data);
+                } catch (Exception $e) {
 
+                    return response()->json([
+
+                        "error" => $e->getMessage()
+                    ]);
+
+                }
                 $nhtorderid = $ordernht->id;
 
-                Customer_order::where("id", $inserted_id)->update([
-                    "nht_order_id" => $nhtorderid,
-                ]);
+
+                try {
+                    Customer_order::whereIN("id", $insertedIds)->update([
+                        "nht_order_id" => $nhtorderid,
+                    ]);
+
+                } catch (Exception $e) {
+
+                    dd($e->getMessage());
+                    return response()->json([
+                        "error" => $e->getMessage()
+                    ]);
+
+                }
 
 
 
-                $package_codes = Vendorpricenht::whereIn(
-                    'package_id',
-                    $order->customer_packages
-                )
-                    ->where('vendor_id', 1)
-                    ->pluck('package_code')
-                    ->toArray();
+                try {
+                    $package_codes = Vendorpricenht::whereIn(
+                        'package_id',
+                        $package_ids,
+                    )
+                        ->where('vendor_id', 1)
+                        ->pluck('package_code')
+                        ->toArray();
+                } catch (Exception $e) {
+                    return response()->json([
+                        "error" => $e->getMessage()
+                    ]);
+                }
+
+                $patients = $request->patients;
+                $firstPatient = array_shift($patients);
+                $additionalMembers = array_values($patients);
                 $payload = [
-                    "booking_date" => $order->booking_date,
-                    "collection_date" => $order->collection_date,
+                    "booking_date" => $firstPatient['booking_date'],
+                    "collection_date" => $firstPatient['collection_date'],
                     "collection_slot" => $order->collection_slot_id,
-                    "customer_address" => $order->customer_address,
-                    "customer_age" => $order->customer_age,
-                    "customer_altphonenumber" => $order->customer_whatsappnumber,
-                    "customer_gender" => $order->customer_gender,
+                    "customer_address" => $firstPatient['address'],
+                    "customer_age" => $firstPatient['age'],
+                    "customer_altphonenumber" => $firstPatient['whatsapp'],
+                    "customer_gender" => $firstPatient['gender'],
                     "customer_latitude" => $order->customer_latitude,
                     "customer_longitude" => $order->customer_longitude,
-                    "customer_name" => $order->customer_name,
-                    "customer_phonenumber" => $order->customer_phonenumber,
-                    "customer_whatsapppnumber" => $order->customer_whatsappnumber,
+                    "customer_name" => $firstPatient['name'],
+                    "customer_phonenumber" => $firstPatient['phone'],
+                    "customer_whatsapppnumber" => $firstPatient['whatsapp'],
                     "is_credit" => true,
-                    "landmark" => $order->customer_landmark,
+                    "landmark" => $firstPatient['landmark'],
                     "package_code" => $package_codes,
-                    "pincode" => $order->pincode,
-                    "additional_member" => [],
-
+                    "pincode" => $firstPatient['pincode'],
+                    "additional_member" => empty($additionalMembers) ? [] : array_map(fn($p) => (object) [
+                        "booking_date" => $p['booking_date'],
+                        "collection_date" => $p['collection_date'],
+                        "collection_slot" => $order->collection_slot_id,
+                        "customer_address" => $p['address'],
+                        "customer_age" => $p['age'],
+                        "customer_altphonenumber" => $p['whatsapp'],
+                        "customer_gender" => $p['gender'],
+                        "customer_latitude" => $order->customer_latitude,
+                        "customer_longitude" => $order->customer_longitude,
+                        "customer_name" => $p['name'],
+                        "customer_phonenumber" => $p['phone'],
+                        "customer_whatsapppnumber" => $p['whatsapp'],
+                        "is_credit" => true,
+                        "landmark" => $p['landmark'],
+                        "package_code" => $package_codes,
+                        "pincode" => $p['pincode'],
+                    ], $additionalMembers),
                 ];
 
                 $bookingResponse = Http::withHeaders([
@@ -899,6 +949,8 @@ class RetailerController extends Controller
 
                 $bookingResponseData = $bookingResponse->json();
 
+
+              
 
                 if (!isset($bookingResponseData['status']) || $bookingResponseData['status'] !== 'success') {
                     return redirect()->route('retailer.allpackages')
@@ -985,7 +1037,6 @@ class RetailerController extends Controller
         }
 
     }
-
 
     public function checking_payment_status_redcliffe($transaction_id, $booking_id)
     {

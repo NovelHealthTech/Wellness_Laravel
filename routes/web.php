@@ -10,6 +10,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Retailer\RetailerController;
 use App\Http\Controllers\VendorController;
 use App\Models\Srlcart;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use SebastianBergmann\CodeUnit\FunctionUnit;
@@ -28,7 +29,7 @@ Route::get('/', function () {
 
 
 Route::get("/services", function () {
-
+ 
     return view('website/services');
 
 })->name('services');
@@ -124,7 +125,7 @@ Route::middleware(['check.auth'])->group(function () {
         Route::get("/retailer", [RetailerController::class, "retailerhomepage"])->name('retailerhomepage');
 
         Route::get("/individualpackage/{id?}", [RetailerController::class, "individualpackage"])->name('individual_package');
-        
+
         Route::get("/allpackages", [RetailerController::class, "allpackages"])->name('allpackages');
         //routes for the srl
         Route::post("/srlcartopen", [RetailerController::class, "srlcartopen"])->name('srl_cart');
@@ -182,8 +183,34 @@ Route::get("/invoice", function () {
     return view('retailer.invoice');
 });
 
-Route::get("/getlogs", function () {
 
+//SRL APIS
+Route::post("/Servicable_status", function (Request $request) {
+
+    $key = "4DEF92694DC6B2D0CD5635BBB1781916";
+    $pincode = $request->pincode;
+    $source = "HK";
+
+    // Generate Token
+    $data = $key . "|" . $pincode . "|AGILUS";
+    $token = hash('sha256', $data);
+
+    // Call Agilus API
+    $response = Http::post("https://apiuat.agilus.in/api/IntegrationAPI/GetServiceableStatus", [
+        "header" => [
+            "Token" => $token
+        ],
+        "body" => [
+            "Pincode" => $pincode,
+            "Source" => $source
+        ]
+    ]);
+
+    return response()->json($response->json());
+});
+
+
+Route::get("/getlogs", function () {
 
     $logs = [
         "details_enter_api" => "fsdfds",
@@ -215,69 +242,3 @@ Route::get("/getlogs", function () {
 
 });
 
-Route::get('/phonepe-test', function () {
-
-    try {
-
-        $totalPrice = 1; // ₹1 test
-
-        // 1️⃣ Order data (NO DB)
-        $order_data = [
-            "user_id" => "1",
-            "user_id_on_phonepe" => "NHT-1",
-            "phone_pe_merchant_id" => "M1VPZ8VOW6UH",
-            "phone_pe_transaction_id" => "TEST" . strtoupper(Str::random(10)), // ✅ Generate unique ID
-            "amount_in_paise" => $totalPrice * 100,
-            "payment_status" => "PAYMENT INITIATED",
-            "customer_id" => 123,
-        ];
-
-        // 2️⃣ PhonePe Client
-        $env = Env::UAT;
-
-        $client = StandardCheckoutClient::getInstance(
-            "M1VPZ8VOW6UH_25120913183",
-            1,
-            "NGQxNzhmZWMtY2NkZS00YjkyLThhNDEtY2VmNTE2YWRiMTQ0",
-            $env
-        );
-
-        // 3️⃣ Payment Request
-        $merchantOrderId = $order_data['phone_pe_transaction_id'];
-
-        $redirectUrl = route(
-            'phonepe-test-callback',
-            ['transaction_id' => encrypt($merchantOrderId)]
-        );
-
-        $payRequest = StandardCheckoutPayRequestBuilder::builder()
-            ->merchantOrderId($merchantOrderId)
-            ->amount($order_data['amount_in_paise'])
-            ->redirectUrl($redirectUrl)
-            ->message("Test Payment")
-            ->build();
-
-        // 4️⃣ Call PhonePe
-        $payResponse = $client->pay($payRequest);
-
-        if ($payResponse->getState() === "PENDING") {
-            return redirect()->away($payResponse->getRedirectUrl());
-        }
-
-        return "Payment initiation failed: " . $payResponse->getState();
-
-    } catch (\Exception $e) {
-        dd($e->getMessage());
-    }
-});
-
-
-Route::get('/phonepe-test-callback/{transaction_id}', function ($transaction_id) {
-
-    dd([
-        "message" => "PhonePe Callback Hit",
-        "transaction_id" => decrypt($transaction_id),
-        "time" => now()->toDateTimeString()
-    ]);
-
-})->name('phonepe-test-callback');

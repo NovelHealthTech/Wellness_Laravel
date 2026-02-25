@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "SRl Vendors",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

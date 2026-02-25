@@ -9,7 +9,7 @@ class NhtOrder extends Model
       protected $fillable = [
         'user_id',
         'package_ids',
-        'customer_id',
+        'customer_ids',
         'user_id_on_phonepe',
         'phone_pe_merchant_id',
         'phone_pe_transaction_id',

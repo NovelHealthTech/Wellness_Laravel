@@ -2,6 +2,7 @@
 @section('content')
     <x-website.header />
     <x-website.home.hero />
+    
     <div class="container">
         <x-website.home.packages />
         <x-website.home.articles />
