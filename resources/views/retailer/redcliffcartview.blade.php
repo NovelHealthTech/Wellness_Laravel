@@ -621,7 +621,7 @@
 </style>
 
 @php
-    $total = collect($redcliffcartitems)->sum('nht_price');
+    $total = collect($redcliffcartitems)->sum('price');
     $count = count($redcliffcartitems);
 @endphp
 
@@ -696,6 +696,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                       
                                         @foreach($redcliffcartitems as $item)
                                             @php
                                                 $desc = json_decode($item->package->description ?? '{}');
@@ -719,7 +720,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="price-tag">₹{{ number_format($item->nht_price) }}</span>
+                                                    <span class="price-tag">₹{{ number_format($item->price) }}</span>
                                                 </td>
                                                 <td>
                                                     <button class="remove-btn" onclick="removeItem({{ $item->id }}, this)">
