@@ -766,7 +766,7 @@
 
             {{-- SRL --}}
             {{-- @if ($availability[0]["status"]) --}}
-              @if(isset($data['srl']))
+              {{-- @if(isset($data['srl']))
                 @php $inSrl = in_array($package->id, $srlpackage_ids); @endphp
                 <a href="{{ route('retailer.srl_cart') }}" class="vendor-option vendor_cart {{ $inSrl ? 'in-cart' : '' }}"
                   data-package_id="{{ $package->id }}" data-vendor_id="{{ $data['srl']['vendor_id'] }}">
@@ -800,8 +800,8 @@
                   </div>
 
                 </a>
-              {{-- @endif --}}
-            @endif
+            
+            @endif --}}
 
 
             {{-- REDCLIFFE --}}
@@ -845,12 +845,12 @@
                   </div>
 
                 </a>
-              {{-- @endif --}}
+            
             @endif
 
             {{-- TATA 1MG --}}
             {{-- @if(isset($availability[2]["status"])) --}}
-              @if(isset($data['tata1mg']))
+              {{-- @if(isset($data['tata1mg']))
                 <a href="" class="vendor-option vendor_cart">
                   <div class="vendor-info">
                     <div class="vendor-avatar tata">T</div>
@@ -863,8 +863,8 @@
                     <span class="price-tag">₹{{ $data['tata1mg']['price'] }}</span>
                   </div>
                 </a>
-              @endif
-            {{-- @endif --}}
+              @endif --}}
+           
           </div>
 
           {{-- @if ($availability[0]["status"]==false && $availability[1]["status"]==false )

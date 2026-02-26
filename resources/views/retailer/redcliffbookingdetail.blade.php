@@ -115,16 +115,16 @@
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Back to Home
       </a>
       <div class="hero-badge"><span></span> Booking</div>
-      <h1>Patient Booking Details</h1>
-      <p>Add complete details for each patient. Every patient has their own full form.</p>
+      <h1>Cutomer Booking Details</h1>
+      <p>Add complete details for each customer. Every cutomer has their own full form.</p>
     </div>
   </div>
 
   <!-- CONTENT -->
   <div class="content-section">
     <div class="content-inner">
-
-      <form id="bookingForm" method="POST" action="{{ route('retailer.red_cliffe_order_placed') }}">
+  {{-- action="{{ route('retailer.red_cliffe_order_placed') }}" --}}
+      <form id="bookingForm" method="POST" >
         @csrf
         <input type="hidden" name="customer_latitude"  value="{{ $latitude }}">
         <input type="hidden" name="customer_longitude" value="{{ $longitude }}">
@@ -134,10 +134,10 @@
 
           <!-- LEFT: Patient Forms -->
           <div>
-            <div class="section-label">Patients — <strong id="countLabel">1 added</strong></div>
+            <div class="section-label">Customers — <strong id="countLabel">1 added</strong></div>
             <div id="patientsWrap"></div>
             <button type="button" class="add-btn" onclick="addPatient()">
-              <i class="bi bi-plus-circle-fill"></i> Add Another Patient
+              <i class="bi bi-plus-circle-fill"></i> Add Another Customer
             </button>
           </div>
 
@@ -216,7 +216,7 @@ function addPatient() {
   div.innerHTML = `
     <div class="patient-header">
       <div class="patient-title">
-        <div class="num-badge">${n}</div> Patient ${n}
+        <div class="num-badge">${n}</div> Customer ${n}
       </div>
       ${n > 1 ? `<button type="button" class="remove-btn" onclick="removePatient(${n})"><i class="bi bi-trash3"></i> Remove</button>` : ''}
     </div>

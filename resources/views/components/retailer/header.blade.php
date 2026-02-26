@@ -470,7 +470,7 @@
     }
 
     /* ── HERO BANNER ─────────────────────────────────── */
-    .appt-hero {
+    /* .appt-hero {
       width: 100%;
       background: #1f3964;
       padding: 52px 60px 48px;
@@ -521,7 +521,7 @@
       color: rgba(255, 255, 255, 0.5);
       max-width: 480px;
       line-height: 1.65;
-    }
+    } */
 
     .cursor-pointer {
       cursor: pointer;
