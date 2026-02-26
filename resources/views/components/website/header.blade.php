@@ -55,6 +55,10 @@
 
         }
 
+        .cursor-pointer{
+            cursor: pointer;
+        }
+
 
         /* for the toggling */
     </style>
@@ -62,7 +66,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-        <img class="noveltechlogo" width="15%" src="{{ asset('images/Dark Logo.png') }}" alt="Logo">
+        <img class="noveltechlogo cursor-pointer" onclick="reloadpage()" width="13%" src="{{ asset('images/Dark Logo.png') }}" alt="Logo">
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,3 +114,8 @@
 
     </div>
 </nav>
+<script>
+    function reloadpage(){
+        window.location.reload();
+    }
+</script>

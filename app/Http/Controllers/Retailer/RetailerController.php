@@ -47,8 +47,8 @@ class RetailerController extends Controller
 
             $allpackages = Newpackage::all();
 
-            $srlcartitems = Srlcart::all();
-            $redcliffcartitems = Redcliffcart::all();
+            $srlcartitems = Srlcart::where("user_id",auth()->user()->id);
+            $redcliffcartitems = Redcliffcart::where("user_id",auth()->user()->id);
 
             $vendors = Vendor::all();
 

@@ -296,9 +296,9 @@
           <div class="col-6 col-lg-2 col-md-3">
             <p class="footer-col-title">Quick Links</p>
             <ul class="footer-nav">
-              <li><a href="/login">Login</a></li>
+              <li><a href="{{ route('loginview') }}">Login</a></li>
               <li><a href="/services">Our Services</a></li>
-              <li><a href="/contact-us">Contact Us</a></li>
+              <li><a href="{{ route('contact_us') }}">Contact Us</a></li>
             </ul>
           </div>
 

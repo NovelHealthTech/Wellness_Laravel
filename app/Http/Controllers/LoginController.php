@@ -69,9 +69,10 @@ class LoginController extends Controller
                 'pincode' => 'required|digits:6',
                 "gender" => "required",
             ]);
+            
 
             $validated["is_loggedin"] = 0;
-            $validated["role_id"] = 2;
+            $validated["roles"] = 2;
             $otp = rand(1000, 9999);
 
             $validated['otp'] = $otp;
@@ -105,6 +106,8 @@ class LoginController extends Controller
             }
 
         } catch (Exception $e) {
+
+        dd($e->getMessage());
 
             return back()->with(["status" => "failure", "message" => "Something went wrong pls try again...!!!"]);
 
