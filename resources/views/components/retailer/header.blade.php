@@ -609,7 +609,7 @@
       <div class="sep"></div>
 
       <!-- Profile -->
-      <div class="profile-btn" data-tip="Profile">
+      <div class="profile-btn" >
         <div class="avatar">JD</div>
         <div class="profile-info">
           <span class="profile-name">John Doe</span>
@@ -620,7 +620,7 @@
       </div>
 
       <!-- Sign Out -->
-      <a href="{{ route('signout') }}" class="signout-btn text-decoration-none" data-tip="Sign Out">
+      <a href="{{ route('signout') }}" class="signout-btn text-decoration-none" >
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
           <polyline points="16 17 21 12 16 7" />
