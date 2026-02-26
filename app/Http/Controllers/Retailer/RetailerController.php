@@ -8,6 +8,7 @@ use App\Models\Logmaster;
 use App\Models\Newpackage;
 use App\Models\NhtOrder;
 use App\Models\Nhtorder as ModelsNhtorder;
+use App\Models\Package;
 use App\Models\Redcliffcart;
 use App\Models\Srlcart;
 use App\Models\Srlorder;
@@ -775,9 +776,9 @@ class RetailerController extends Controller
             $pincode = $request->redcliffpincode;
             $collection_date = $request->redcliffdate;
             $collection_slot_id = $request->redcliffslot;
-            $redcliffcart_items=Redcliffcart::where("user_id",auth()->user()->id)->get();
-            
-            return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id','redcliffcart_items'));
+            $redcliffcart_items = Redcliffcart::where("user_id", auth()->user()->id)->get();
+
+            return view('retailer.redcliffbookingdetail', compact('latitude', 'longitude', 'pincode', 'collection_date', 'collection_slot_id', 'redcliffcart_items'));
 
 
         } catch (ValidationException $e) {
@@ -798,8 +799,10 @@ class RetailerController extends Controller
             $package_ids = Redcliffcart::where("user_id", Auth()->user()->id)->pluck('package_id');
 
             $order_data = [];
+            $package_ids = [];
 
             foreach ($request->patients as $patient) {
+
                 $order_data[] = [
                     'user_id' => Auth::user()->id,
                     'collection_slot_id' => $request->collection_slot_id,
@@ -840,6 +843,7 @@ class RetailerController extends Controller
             if (!empty($insertedIds)) {
 
                 $totalPrice = (int) Redcliffcart::where('user_id', Auth::id())->sum('price');
+                $package_ids = Redcliffcart::where("user_id", auth()->user()->id)->pluck('package_id')->toArray();
 
 
 
@@ -851,10 +855,13 @@ class RetailerController extends Controller
                     "amount_in_paise" => $totalPrice * 100, // If price is in ₹, multiply by 100
                     "payment_status" => "PAYMENT INITIATED",
                     "customer_ids" => json_encode($insertedIds),
+                    "package_ids" => json_encode($package_ids),
+
                 ];
 
                 try {
                     $ordernht = NhtOrder::create($nht_order_data);
+
 
                 } catch (Exception $e) {
 
@@ -950,7 +957,7 @@ class RetailerController extends Controller
                 $bookingResponseData = $bookingResponse->json();
 
 
-              
+
 
                 if (!isset($bookingResponseData['status']) || $bookingResponseData['status'] !== 'success') {
                     return redirect()->route('retailer.allpackages')
@@ -1594,6 +1601,62 @@ class RetailerController extends Controller
                 'data' => urlencode(json_encode($result)),
             ]),
         ]);
+    }
+    public function orders()
+    {
+        $user_nht_orders = NhtOrder::where("user_id", auth()->user()->id)->where("payment_status", "SUCCESS")->get();
+
+        $orders = [];
+        foreach ($user_nht_orders as $order) {
+            $package_ids = json_decode($order->package_ids);
+
+            $packages = Newpackage::whereIN("id", $package_ids)->get();
+            $orders[] = (object) [
+                "nht_order_id" => $order->id,
+                "package_ids" => json_decode($order->package_ids, true),
+                "packages" => $packages,
+            ];
+
+        }
+
+        return view("retailer.orders", compact('orders'));
+
+    }
+    public function vieworder(Request $request)
+    {
+        $nht_order_id = base64_decode($request->id);
+        $nht_order = NhtOrder::where("id", $nht_order_id)->first();
+        $packages = Newpackage::whereIN("id", json_decode($nht_order->package_ids))->get();
+        $customers = Customer_order::whereIN("id", json_decode($nht_order->customer_ids))->get();
+        return view("retailer.individual_order_view", compact('packages', 'customers', 'nht_order_id'));
+
+    }
+    public function deletepackage(Request $request)
+    {
+
+        try {
+            $Redcliffexist = Redcliffcart::where("user_id",auth()->user()->id)->where("package_id",$request->id)->first();
+            if ($Redcliffexist) {
+                Redcliffcart::where("user_id", auth()->user()->id)->where("package_id", $request->id)->delete();
+
+                return response()->json([
+                    "success" => true,
+                    "redirect" => route('retailer.allpackages'),
+                ]);
+
+            }
+        } catch (Exception $e) {
+
+            return response()->json([
+                "success" => false,
+                "message" => $e->getMessage(),
+
+            ]);
+
+        }
+
+
+
     }
 }
 

@@ -11,11 +11,10 @@
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
-  <!-- Font Awesome — FIX: use <link> not @import for external CSS -->
+  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
   <style>
-    /* ===== Base ===== */
     *,
     *::before,
     *::after {
@@ -39,9 +38,6 @@
       flex: 1 0 auto;
     }
 
-    /* ==========================================
-       FOOTER
-    ========================================== */
     .site-footer {
       flex-shrink: 0;
       background-color: #243665;
@@ -50,7 +46,6 @@
       overflow: hidden;
     }
 
-    /* FIX: scope white to footer children only — don't override links globally */
     .site-footer,
     .site-footer p,
     .site-footer li,
@@ -60,7 +55,6 @@
       color: #fff;
     }
 
-    /* Top shimmer line */
     .site-footer::before {
       content: "";
       position: absolute;
@@ -79,7 +73,6 @@
       }
     }
 
-    /* Glow orbs */
     .footer-orb {
       position: absolute;
       border-radius: 50%;
@@ -104,14 +97,12 @@
       left: -60px;
     }
 
-    /* Main content */
     .footer-main {
       padding: 65px 0 50px;
       position: relative;
       z-index: 1;
     }
 
-    /* Brand */
     .footer-brand-name {
       font-size: 1.45rem;
       font-weight: 700;
@@ -122,8 +113,6 @@
     .footer-brand-name span {
       color: #38bdf8;
     }
-
-    /* FIX: accent the "Healthtech" word */
 
     .footer-tagline {
       font-size: 0.875rem;
@@ -140,7 +129,6 @@
       margin: 18px 0;
     }
 
-    /* Social icons */
     .footer-socials {
       display: flex;
       gap: 10px;
@@ -156,13 +144,11 @@
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: #fff;
-      /* FIX: explicit icon color */
       font-size: 0.9rem;
       text-decoration: none;
       transition: background 0.25s, border-color 0.25s, transform 0.25s;
     }
 
-    /* FIX: hover was empty before */
     .social-icon:hover {
       background: rgba(255, 255, 255, 0.25);
       border-color: rgba(255, 255, 255, 0.55);
@@ -170,18 +156,15 @@
       color: #fff;
     }
 
-    /* Column titles */
     .footer-col-title {
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.2px;
       color: rgba(255, 255, 255, 0.55);
-      /* FIX: subtle muted label, not full white */
       margin-bottom: 18px;
     }
 
-    /* Nav links */
     .footer-nav {
       list-style: none;
       padding: 0;
@@ -201,13 +184,11 @@
       display: inline-block;
     }
 
-    /* FIX: hover now shows visible color change */
     .footer-nav a:hover {
       color: #38bdf8;
       padding-left: 6px;
     }
 
-    /* Info rows */
     .footer-info-row {
       display: flex;
       align-items: flex-start;
@@ -220,7 +201,6 @@
 
     .footer-info-row i {
       color: #38bdf8;
-      /* FIX: accent color for info icons */
       margin-top: 3px;
       flex-shrink: 0;
       width: 14px;
@@ -236,7 +216,6 @@
       color: #38bdf8;
     }
 
-    /* FIX: hr must have z-index to appear above orbs */
     .footer-hr {
       border: none;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -245,7 +224,6 @@
       z-index: 1;
     }
 
-    /* Bottom bar */
     .footer-bottom {
       padding: 22px 0;
       display: flex;
@@ -296,10 +274,10 @@
                 class="social-icon" aria-label="LinkedIn">
                 <i class="fab fa-linkedin-in"></i>
               </a>
-              <!-- Uncomment as needed:
-            <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="mailto:support@novelhealthtech.com" class="social-icon" aria-label="Email"><i class="fas fa-envelope"></i></a>
-            -->
+              <a href="https://www.facebook.com/novelhealthtech" target="_blank" class="social-icon"
+                aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
             </div>
           </div>
 
@@ -307,10 +285,10 @@
           <div class="col-6 col-lg-2 col-md-3">
             <p class="footer-col-title">Company</p>
             <ul class="footer-nav">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Refund &amp; Cancellation</a></li>
-              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/privacy-policy">Privacy Policy</a></li>
+              <li><a href="/refund-cancellation">Refund &amp; Cancellation</a></li>
+              <li><a href="/terms-and-conditions">Terms &amp; Conditions</a></li>
             </ul>
           </div>
 
@@ -318,9 +296,9 @@
           <div class="col-6 col-lg-2 col-md-3">
             <p class="footer-col-title">Quick Links</p>
             <ul class="footer-nav">
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Our Services</a></li>
-              <li><a href="#">Contact Us</a></li>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/services">Our Services</a></li>
+              <li><a href="/contact-us">Contact Us</a></li>
             </ul>
           </div>
 
@@ -365,9 +343,10 @@
     </div>
 
   </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  
+
   <script>
     function successalert(data) {
       Swal.fire({
@@ -396,14 +375,13 @@
       });
     }
 
-
     window.addEventListener("load", function () {
       const loader = document.getElementById("pageLoader");
-
       setTimeout(() => {
         loader.classList.add("hidden");
-      }, 500); // delay for smooth effect
+      }, 500);
     });
+
     document.addEventListener('DOMContentLoaded', function () {
       console.log("sdfdssd");
 
@@ -416,7 +394,6 @@
       }
     });
   </script>
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

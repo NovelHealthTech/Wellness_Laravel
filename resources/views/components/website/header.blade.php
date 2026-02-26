@@ -72,32 +72,41 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav navbar_modified w-100 mb-2 mb-lg-0 py-3">
                 <li class="nav-item">
-                   <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                    <a class="nav-link  fw-semi-bold {{ request()->routeIs('home') ? 'active' : '' }}"
+                        href="{{ route('home') }}">Home</a>
                 </li>
                 <hr>
                 <li class="nav-item">
-                    <a class="nav-link inactive {{ request()->routeIs('services') ? 'active':'' }}" href="{{ route('services') }}">Our Services</a>
+                    <a class="nav-link inactive fw-semi-bold {{ request()->routeIs('services') ? 'active' : '' }}"
+                        href="{{ route('services') }}">Our Services</a>
                 </li>
                 <hr>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('about') ?'active':"" }}" href="{{ route("about") }}">About</a>
+                    <a class="nav-link fw-semi-bold {{ request()->routeIs('about') ? 'active' : "" }}"
+                        href="{{ route("about") }}">About</a>
                 </li>
                 <hr>
                 {{-- <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('blog') }}" href="{{ route('blog') }}" >Blogs</a>
+                    <a class="nav-link {{ request()->routeIs('blog') }}" href="{{ route('blog') }}">Blogs</a>
                 </li> --}}
                 <hr>
+               
                 <li>
-                    <a href="{{ route('loginview') }}" class="btn loginsignup_header me-2">Login/Signup</a>
+                    <a href="{{ route('loginview') }}" class="btn loginsignup_header">
+                        Login / Sign Up →
+                    </a>
                 </li>
                 <hr>
                 <li>
-                    {{-- <div>
-                        <img width="30px" src="{{ asset('images/languages (1).png') }}" alt="Languages">
-                        <span>English</span>
-                    </div> --}}
+
                 </li>
             </ul>
         </div>
+
+        <div class="d-flex justify-content-end">
+            <img width="30%" src="{{ asset('images/suraksha.png') }}"></img>
+        </div>
+
+
     </div>
 </nav>

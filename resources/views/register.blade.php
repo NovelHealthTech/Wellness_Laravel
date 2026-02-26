@@ -1,246 +1,544 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>User Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <title>Login — Novel Healthtech</title>
+
     <style>
-        * { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
-        body { margin: 0; background: #f5f5f5; }
-        .clearfix { clear: both; }
-        .w-720px { max-width: 720px; width: 95%; margin: auto; }
-        .top-links { padding: 20px; text-align: right; font-size: 14px; }
-        .top-links a { color: #555; text-decoration: none; margin: 0 4px; }
-        .top-links a:hover { color: #007bff; }
-        .login-form { background: #fff; margin-top: 20px; margin-bottom: 40px; border-radius: 10px; box-shadow: 0 12px 30px rgba(0, 0, 0, .08); }
-        .form-body { padding: 20px; overflow: hidden; }
-        .col-sm-6 { width: 50%; float: left; padding: 0 10px; }
-        .form-group { margin-bottom: 15px; }
-        label { font-size: 14px; margin-bottom: 6px; display: block; color: #333; font-weight: 500; }
-        .form-control { width: 100%; height: 40px; padding: 8px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
-        .form-control:focus { outline: none; border-color: #007bff; }
-        .input-group { display: flex; align-items: stretch; }
-        .input-group-addon { background: #eee; padding: 8px 12px; border: 1px solid #ccc; border-right: none; display: flex; align-items: center; border-radius: 5px 0 0 5px; }
-        .input-group .form-control { border-radius: 0; }
-        .input-group .form-control:last-child { border-radius: 0 5px 5px 0; }
-        .eye { cursor: pointer; background: #eee; border: 1px solid #ccc; border-left: none; border-radius: 0 5px 5px 0; user-select: none; }
-        .eye:hover { background: #ddd; }
-        .form-footer { padding: 20px; border-top: 1px solid #eee; }
-        .btn { height: 44px; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }
-        .btn-block { width: 100%; }
-        .btn-primary { background: #007bff; border: none; color: #fff; }
-        .btn-primary:hover { background: #0056b3; }
-        .text-danger { font-size: 12px; color: #dc3545; margin-top: 4px; display: block; }
+        :root {
+            --navy: #243665;
+            --navy-dark: #1a2847;
+            --navy-deep: #0f1e3d;
+            --teal: #0d9488;
+            --teal-l: #f0fdfa;
+            --white: #ffffff;
+            --muted: #94a3b8;
+            --font: 'Sora', sans-serif;
+            --body: 'DM Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--body);
+            background: var(--navy-deep);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── BACKGROUND ── */
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+        .page-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('{{ asset(\'images/website/login/doctor.png\') }}');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: auto 100%;
+            filter: blur(6px);
+            z-index: -2;
+        }
+        .page-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('{{ asset(\'images/website/login/doctor_background.png\') }}');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* ── MAIN CARD ── */
+        .main-card {
+            position: relative;
+            z-index: 1;
+            width: 95vw;
+            max-width: 1040px;
+            height: 88vh;
+            max-height: 700px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            background: linear-gradient(160deg, #1e3a6e 0%, #243665 40%, #1a2847 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 44px 36px;
+            overflow: hidden;
+        }
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 420px; height: 420px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+            top: -110px; right: -130px;
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 70%);
+            bottom: 60px; left: -60px;
+        }
+
+        .brand-logo { display: flex; align-items: center; gap: 11px; position: relative; z-index: 1; }
+        .brand-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--teal), #0f766e);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 14px rgba(13,148,136,0.4);
+            flex-shrink: 0;
+        }
+        .brand-name { font-family: var(--font); font-size: 17px; font-weight: 800; color: var(--white); letter-spacing: -0.3px; line-height: 1.1; }
+        .brand-name span { color: #5eead4; }
+        .brand-tagline { font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+        .product-copy { position: relative; z-index: 1; }
+        .product-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(13,148,136,0.15); border: 1px solid rgba(13,148,136,0.3);
+            border-radius: 50px; padding: 4px 12px;
+            font-family: var(--font); font-size: 10px; font-weight: 700; color: #5eead4;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px;
+        }
+        .product-eyebrow .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .product-headline { font-family: var(--font); font-size: clamp(22px, 2.6vw, 32px); font-weight: 800; color: var(--white); line-height: 1.2; letter-spacing: -0.7px; margin-bottom: 14px; }
+        .product-headline em { font-style: normal; color: #5eead4; }
+        .product-desc { font-size: 13.5px; color: rgba(255,255,255,0.48); line-height: 1.65; max-width: 360px; margin-bottom: 28px; }
+
+        .features { display: flex; flex-direction: column; gap: 11px; }
+        .feature-item { display: flex; align-items: flex-start; gap: 12px; }
+        .feature-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+        .feature-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+        .feature-text strong { color: var(--white); font-weight: 700; display: block; }
+
+        .vendors { position: relative; z-index: 1; }
+        .vendors-label { font-size: 10px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 10px; }
+        .vendor-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .vendor-pill { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 7px; padding: 5px 11px; font-family: var(--font); font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); white-space: nowrap; }
+        .vendor-pill.srl  { border-color: rgba(59,130,246,0.3);  color: #93c5fd; }
+        .vendor-pill.red  { border-color: rgba(239,68,68,0.3);   color: #fca5a5; }
+        .vendor-pill.tata { border-color: rgba(251,191,36,0.3);  color: #fde68a; }
+
+        .trust-bar { position: relative; z-index: 1; display: flex; align-items: center; gap: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .trust-stat .num { font-family: var(--font); font-size: 17px; font-weight: 800; color: var(--white); }
+        .trust-stat .lbl { font-size: 10.5px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+        .trust-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.1); }
+
+        /* ── RIGHT PANEL ── */
+        .right-panel { background: var(--white); display: flex; flex-direction: column; overflow: hidden; }
+
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
+        .auth-tab {
+            padding: 17px 16px; background: none; border: none;
+            font-family: var(--font); font-size: 13px; font-weight: 700; color: #94a3b8;
+            cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent;
+        }
+        .auth-tab.active { color: var(--navy); border-bottom-color: var(--navy); background: #fafbff; }
+        .auth-tab:hover:not(.active) { color: #475569; background: #f8fafc; }
+
+        .form-scroll { flex: 1; overflow-y: auto; padding: 28px 34px; }
+        .form-scroll::-webkit-scrollbar { width: 4px; }
+        .form-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+        .form-heading h4 { font-family: var(--font); font-size: 19px; font-weight: 800; color: var(--navy); letter-spacing: -0.4px; }
+        .form-heading p { font-size: 13px; color: #64748b; margin-top: 4px; }
+        .form-heading p a { color: var(--teal); font-weight: 600; text-decoration: none; }
+
+        .access-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
+            padding: 7px 12px; font-size: 12px; color: #166534; font-weight: 600; margin: 14px 0 22px;
+        }
+
+        /* ── SHARED FIELD STYLES ── */
+        .field { margin-bottom: 15px; }
+        .field label {
+            display: block; font-family: var(--font); font-size: 10px; font-weight: 700;
+            color: #475569; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px;
+        }
+        .field input,
+        .field select {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: var(--body); font-size: 14px; color: var(--navy); background: #f8fafc;
+            outline: none; transition: all 0.2s; height: 42px;
+        }
+        .field input:focus,
+        .field select:focus { border-color: var(--navy); background: var(--white); box-shadow: 0 0 0 4px rgba(36,54,101,0.08); }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* input-group style (for icon prefix + eye toggle) */
+        .input-wrap { display: flex; align-items: stretch; }
+        .input-prefix {
+            background: #f1f5f9; border: 1.5px solid #e2e8f0; border-right: none;
+            border-radius: 10px 0 0 10px; padding: 0 12px;
+            display: flex; align-items: center; color: #64748b; font-size: 13px; flex-shrink: 0;
+        }
+        .input-wrap input {
+            border-radius: 0; border-left: none; flex: 1;
+        }
+        .input-wrap input:focus { border-color: var(--navy); box-shadow: none; }
+        .input-wrap input:focus ~ .input-eye,
+        .input-wrap input:focus + .input-eye { border-color: var(--navy); }
+        .input-eye {
+            background: #f1f5f9; border: 1.5px solid #e2e8f0; border-left: none;
+            border-radius: 0 10px 10px 0; padding: 0 12px;
+            display: flex; align-items: center; cursor: pointer; color: #64748b;
+            transition: background 0.2s;
+        }
+        .input-eye:hover { background: #e2e8f0; }
+
+        .text-danger { font-size: 11.5px; color: #dc3545; margin-top: 4px; display: block; }
+
+        .forgot-link { text-align: right; margin-top: -8px; margin-bottom: 12px; }
+        .forgot-link a { font-size: 12px; color: #64748b; text-decoration: none; }
+
+        .otp-check { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+        .otp-check input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--navy); cursor: pointer; }
+        .otp-check label { font-size: 13px; color: #475569; cursor: pointer; }
+
+        .submit-btn {
+            width: 100%; padding: 13px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            color: var(--white); border: none; border-radius: 11px;
+            font-family: var(--font); font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(36,54,101,0.35);
+        }
+        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(36,54,101,0.4); }
+
+        .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+        .divider hr { flex: 1; border: none; border-top: 1px solid #e2e8f0; }
+        .divider span { font-size: 12px; color: #94a3b8; }
+
+        .bottom-link { text-align: center; font-size: 13px; color: #64748b; }
+        .bottom-link a { color: var(--navy); font-weight: 700; text-decoration: none; }
+
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-            .col-sm-6 { width: 100%; padding: 0; }
-            .top-links { text-align: center; font-size: 12px; }
-            .top-links a { display: inline-block; margin: 5px 2px; }
+            body { overflow-y: auto; align-items: flex-start; }
+            .main-card { grid-template-columns: 1fr; height: auto; max-height: none; min-height: 100vh; border-radius: 0; width: 100%; }
+            .left-panel { padding: 28px 24px; }
+            .trust-bar { display: none; }
+            .form-scroll { padding: 24px 20px; }
+            .field-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
+    <div class="page-bg"></div>
 
-    <!-- Top links -->
-    <div class="top-links">
-        <a href="#contact">Contact us</a> |
-        <a href="#about">About us</a> |
-        <a href="#privacy">Privacy Policy</a> |
-        <a href="#terms">Terms & conditions</a> |
-        <a href="#faq">FAQs</a> |
-        <a href="#refund">Refund & Cancellation</a>
-    </div>
+    <div class="main-card">
 
-    <!-- Registration Card -->
-    <div class="login-form w-720px">
-        <form method="POST" action="{{ route('signup') }}" id="registrationForm">
-            @csrf
-            <div class="form-body">
+        <!-- ══ LEFT: Novel Healthtech Showcase ══ -->
+        <div class="left-panel">
 
-                <!-- First Name -->
-                <div class="col-sm-6 form-group">
-                    <label for="first_name">First Name <span style="color:red;">*</span></label>
-                    <input type="text" id="first_name" name="firstname" class="form-control"
-                        value="{{ old('firstname') }}" required>
-                    @error('firstname')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+            <div class="brand-logo">
+                <div class="brand-icon">🏥</div>
+                <div>
+                    <div class="brand-name">Novel <span>Healthtech</span></div>
+                    <div class="brand-tagline">Accessible Healthcare for Everyone</div>
                 </div>
-
-                <!-- Last Name -->
-                <div class="col-sm-6 form-group">
-                    <label for="lastname">Last Name <span style="color:red;">*</span></label>
-                    <input type="text" id="last_name" name="lastname" class="form-control"
-                        value="{{ old('lastname') }}" required>
-                    @error('lastname')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Email -->
-                <div class="col-sm-6 form-group">
-                    <label for="email">Email ID <span style="color:red;">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-                        <input type="email" id="email" name="email" class="form-control"
-                            value="{{ old('email') }}" required>
-                    </div>
-                    @error('email')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Mobile -->
-                <div class="col-sm-6 form-group">
-                    <label for="mobile">Mobile <span style="color:red;">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-addon">+91</span>
-                        <input type="tel" id="ph_number" name="mobile" class="form-control"
-                            pattern="[0-9]{10}" maxlength="10" value="{{ old('mobile') }}" required>
-                    </div>
-                    @error('mobile')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Password -->
-                <div class="col-sm-6 form-group">
-                    <label for="password">Password <span style="color:red;">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
-                        <input type="password" id="txtPassword" name="password" class="form-control" minlength="6" required>
-                        <span class="input-group-addon eye" id="toggle_pwd">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                    </div>
-                    @error('password')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Confirm Password -->
-                <div class="col-sm-6 form-group">
-                    <label for="password_confirmation">Confirm Password <span style="color:red;">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
-                        <input type="password" id="txtPassword2" name="password_confirmation" class="form-control" minlength="6" required>
-                        <span class="input-group-addon eye" id="toggle_pwd2">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- DOB -->
-                <div class="col-sm-6 form-group">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" class="form-control" value="{{ old('dob') }}">
-                    @error('dob')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Gender -->
-                <div class="col-sm-6 form-group">
-                    <label for="gender">Gender</label>
-                    <select id="gender" name="gender" class="form-control">
-                        <option value="">Select</option>
-                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
-                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
-                        <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
-                    </select>
-                    @error('gender')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Address -->
-                <div class="col-sm-6 form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" value="{{ old('address') }}">
-                    @error('address')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- City -->
-                <div class="col-sm-6 form-group">
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city" class="form-control" value="{{ old('city') }}">
-                    @error('city')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- State -->
-                <div class="col-sm-6 form-group">
-                    <label for="state">State</label>
-                    <input type="text" id="state" name="state" class="form-control" value="{{ old('state') }}">
-                    @error('state')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Pincode -->
-                <div class="col-sm-6 form-group">
-                    <label for="pincode">Pincode</label>
-                    <input type="text" id="pincode" name="pincode" class="form-control" pattern="[0-9]{6}" maxlength="6" value="{{ old('pincode') }}">
-                    @error('pincode')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="clearfix"></div>
             </div>
 
-            <div class="form-footer">
-                <button type="submit" class="btn btn-primary btn-block">REGISTER</button>
+            <div class="product-copy">
+                <div class="product-eyebrow"><span class="dot"></span> All-in-one Healthcare Platform</div>
+                <h2 class="product-headline">Healthcare that comes<br><em>to your doorstep.</em></h2>
+                <p class="product-desc">From doctor consultations to lab tests and medicines — Novel Healthtech brings everything under one roof, powered by India's most trusted healthcare partners.</p>
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="feature-icon">👨‍⚕️</div>
+                        <div class="feature-text"><strong>Doctor on Call</strong>Consult qualified doctors anytime, from anywhere</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🧪</div>
+                        <div class="feature-text"><strong>Lab Tests at Home</strong>Book via SRL, Redcliffe & Tata 1mg — sample collected at your door</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💊</div>
+                        <div class="feature-text"><strong>E-Pharmacy</strong>Order genuine medicines online with fast home delivery</div>
+                    </div>
+                </div>
             </div>
-        </form>
+
+            <div class="vendors">
+                <div class="vendors-label">Our Lab Partners</div>
+                <div class="vendor-pills">
+                    <span class="vendor-pill srl">🔬 SRL Diagnostics</span>
+                    <span class="vendor-pill red">🧬 Redcliffe Labs</span>
+                    <span class="vendor-pill tata">⭐ Tata 1mg</span>
+                </div>
+            </div>
+
+            <div class="trust-bar">
+                <div class="trust-stat"><div class="num">50K+</div><div class="lbl">Patients Served</div></div>
+                <div class="trust-divider"></div>
+                <div class="trust-stat"><div class="num">3</div><div class="lbl">Lab Partners</div></div>
+                <div class="trust-divider"></div>
+                <div class="trust-stat"><div class="num">24/7</div><div class="lbl">Doctor on Call</div></div>
+            </div>
+
+        </div>
+
+        <!-- ══ RIGHT: Auth Forms ══ -->
+        <div class="right-panel">
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+
+            <div class="form-scroll">
+
+                <!-- ══ LOGIN TAB ══ -->
+                <div id="login-tab">
+                    <div class="form-heading">
+                        <h4>Welcome back 👋</h4>
+                        <p>Don't have an account? <a href="#" class="tab-switch" data-tab="signup">Sign up free</a></p>
+                    </div>
+                    <div class="access-badge">✅ Login to access your Novel Healthtech dashboard</div>
+
+                    <form action="{{ route('login.post') }}" method="post">
+                        @csrf
+                        <div class="field">
+                            <label>Email Address</label>
+                            <div class="input-wrap">
+                                <span class="input-prefix"><i class="fa fa-envelope-o"></i></span>
+                                <input type="email" name="email" id="email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Password</label>
+                            <div class="input-wrap">
+                                <span class="input-prefix"><i class="fa fa-key"></i></span>
+                                <input type="password" name="password" id="txtPasswordLogin" placeholder="Your password" autocomplete="off" required>
+                                <span class="input-eye" id="toggle_login_pwd"><i class="fa fa-eye"></i></span>
+                            </div>
+                        </div>
+                        <div class="forgot-link"><a href="#">Forgot password?</a></div>
+                        <div class="otp-check">
+                            <input type="checkbox" id="otpToggle">
+                            <label for="otpToggle">Login with OTP instead of password</label>
+                        </div>
+                        <button type="submit" class="submit-btn">LOGIN NOW</button>
+                    </form>
+
+                    <div class="divider"><hr><span>or</span><hr></div>
+                    <div class="bottom-link">New here? <a href="#" class="tab-switch" data-tab="signup">Create your account →</a></div>
+                </div>
+
+                <!-- ══ SIGNUP TAB ══ -->
+                <div id="signup-tab" class="d-none">
+                    <div class="form-heading">
+                        <h4>Create your account ✨</h4>
+                        <p>Already registered? <a href="#" class="tab-switch" data-tab="login">Login here</a></p>
+                    </div>
+                    <div class="access-badge">🏥 Sign up to access all Novel Healthtech services</div>
+
+                    <form method="POST" action="{{ route('signup') }}" id="registrationForm">
+                        @csrf
+
+                        <!-- First & Last Name -->
+                        <div class="field-row">
+                            <div class="field">
+                                <label>First Name <span style="color:red">*</span></label>
+                                <input type="text" name="firstname" value="{{ old('firstname') }}" placeholder="Rahul" required>
+                                @error('firstname')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                            <div class="field">
+                                <label>Last Name <span style="color:red">*</span></label>
+                                <input type="text" name="lastname" value="{{ old('lastname') }}" placeholder="Sharma" required>
+                                @error('lastname')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="field">
+                            <label>Email ID <span style="color:red">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-prefix"><i class="fa fa-envelope-o"></i></span>
+                                <input type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required>
+                            </div>
+                            @error('email')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+
+                        <!-- Mobile -->
+                        <div class="field">
+                            <label>Mobile <span style="color:red">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-prefix">+91</span>
+                                <input type="tel" name="mobile" id="ph_number" pattern="[0-9]{10}" maxlength="10" value="{{ old('mobile') }}" placeholder="10-digit number" required>
+                            </div>
+                            @error('mobile')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+
+                        <!-- Password -->
+                        <div class="field">
+                            <label>Password <span style="color:red">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-prefix"><i class="fa fa-key"></i></span>
+                                <input type="password" name="password" id="txtPassword" placeholder="Min 6 characters" minlength="6" required>
+                                <span class="input-eye" id="toggle_pwd"><i class="fa fa-eye"></i></span>
+                            </div>
+                            @error('password')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="field">
+                            <label>Confirm Password <span style="color:red">*</span></label>
+                            <div class="input-wrap">
+                                <span class="input-prefix"><i class="fa fa-key"></i></span>
+                                <input type="password" name="password_confirmation" id="txtPassword2" placeholder="Re-enter password" minlength="6" required>
+                                <span class="input-eye" id="toggle_pwd2"><i class="fa fa-eye"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- DOB & Gender -->
+                        <div class="field-row">
+                            <div class="field">
+                                <label>Date of Birth</label>
+                                <input type="date" name="dob" value="{{ old('dob') }}">
+                                @error('dob')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                            <div class="field">
+                                <label>Gender</label>
+                                <select name="gender">
+                                    <option value="">Select</option>
+                                    <option value="male"   {{ old('gender') == 'male'   ? 'selected' : '' }}>Male</option>
+                                    <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                                    <option value="other"  {{ old('gender') == 'other'  ? 'selected' : '' }}>Other</option>
+                                </select>
+                                @error('gender')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="field">
+                            <label>Address</label>
+                            <input type="text" name="address" value="{{ old('address') }}" placeholder="House no, street, area…">
+                            @error('address')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+
+                        <!-- City & State -->
+                        <div class="field-row">
+                            <div class="field">
+                                <label>City</label>
+                                <input type="text" name="city" value="{{ old('city') }}" placeholder="Delhi">
+                                @error('city')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                            <div class="field">
+                                <label>State</label>
+                                <input type="text" name="state" value="{{ old('state') }}" placeholder="Delhi">
+                                @error('state')<span class="text-danger">{{ $message }}</span>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Pincode -->
+                        <div class="field">
+                            <label>Pincode</label>
+                            <input type="text" name="pincode" pattern="[0-9]{6}" maxlength="6" value="{{ old('pincode') }}" placeholder="6-digit pincode">
+                            @error('pincode')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+
+                        <button type="submit" class="submit-btn">REGISTER NOW</button>
+                    </form>
+
+                    <div class="divider"><hr><span>or</span><hr></div>
+                    <div class="bottom-link">Already have an account? <a href="#" class="tab-switch" data-tab="login">Login →</a></div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Password toggle
+        // ── Tab switching ──
+        const tabs      = document.querySelectorAll('.auth-tab');
+        const loginTab  = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+
+        function switchTab(name) {
+            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+            loginTab.classList.toggle('d-none',  name !== 'login');
+            signupTab.classList.toggle('d-none', name !== 'signup');
+        }
+
+        tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+        document.querySelectorAll('.tab-switch').forEach(link => {
+            link.addEventListener('click', e => { e.preventDefault(); switchTab(link.dataset.tab); });
+        });
+
+        // ── Password toggles ──
+        $("#toggle_login_pwd").click(function () {
+            const f = $("#txtPasswordLogin");
+            f.attr("type", f.attr("type") === "password" ? "text" : "password");
+            $(this).find("i").toggleClass("fa-eye fa-eye-slash");
+        });
         $("#toggle_pwd").click(function () {
-            const passwordField = $("#txtPassword");
-            const type = passwordField.attr("type") === "password" ? "text" : "password";
-            passwordField.attr("type", type);
+            const f = $("#txtPassword");
+            f.attr("type", f.attr("type") === "password" ? "text" : "password");
             $(this).find("i").toggleClass("fa-eye fa-eye-slash");
         });
         $("#toggle_pwd2").click(function () {
-            const passwordField = $("#txtPassword2");
-            const type = passwordField.attr("type") === "password" ? "text" : "password";
-            passwordField.attr("type", type);
+            const f = $("#txtPassword2");
+            f.attr("type", f.attr("type") === "password" ? "text" : "password");
             $(this).find("i").toggleClass("fa-eye fa-eye-slash");
         });
 
-        // Confirm password check
+        // ── Confirm password check ──
         $("#registrationForm").on("submit", function (e) {
-            const password = $("#txtPassword").val();
-            const confirmPassword = $("#txtPassword2").val();
-            if (password !== confirmPassword) {
+            if ($("#txtPassword").val() !== $("#txtPassword2").val()) {
                 e.preventDefault();
-                alert("Passwords do not match!");
+                Swal.fire({ icon: 'error', title: 'Passwords do not match!', confirmButtonColor: '#243665' });
                 return false;
             }
         });
 
-        // SweetAlert for session messages
-        @if(session('status') =='failure')
+        // ── SweetAlert for session messages ──
+        @if(session('status') == 'failure')
             Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
+                toast: true, position: 'top-end', icon: 'error',
                 title: "{{ session('message') }}",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
+                showConfirmButton: false, timer: 3000, timerProgressBar: true
             });
+        @endif
+
+        // ── If validation errors exist, auto-open signup tab ──
+        @if($errors->any())
+            switchTab('signup');
         @endif
     </script>
 

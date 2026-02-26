@@ -204,7 +204,6 @@ class PackageController extends Controller
     public function fetchallpackages(Request $request)
     {
 
-
         if ($request->ajax()) {
 
             $data = Newpackage::select('id', 'packagename', 'price', "vendor_id", "image", "status", "updated_at", "created_at");

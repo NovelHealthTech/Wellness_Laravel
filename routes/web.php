@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 
 Route::get("/services", function () {
- 
+
     return view('website/services');
 
 })->name('services');
@@ -73,11 +73,8 @@ Route::get("/terms_and_condition", function () {
 })->name('terms_and_condition');
 
 Route::get("/loginview", function () {
-    return response()
-        ->view('login')
-        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-        ->header('Pragma', 'no-cache')
-        ->header('Expires', '0');
+    return view('login');
+       
 })->name('loginview');
 Route::post("/login", [LoginController::class, "login"])->name('login.post');
 Route::get("/signupview", [LoginController::class, "signupview"])->name("signupview");
@@ -168,6 +165,17 @@ Route::middleware(['check.auth'])->group(function () {
 
         //for the e-pharmacy
         Route::get("/Epharmacy", [RetailerController::class, "epharmacy"])->name("epharmacy");
+
+        //this is for the  orders
+
+        Route::get("/orders" ,[RetailerController::class, "orders"])->name('orders');
+
+        Route::get("/vieworder/{id}",[RetailerController::class,"vieworder"])->name('vieworder');
+
+
+        //for  package deletion
+        Route::post("/deletepackage",[RetailerController::class, "deletepackage"])->name('deletepackage');
+
     });
 
     //this is for the surgical assistance

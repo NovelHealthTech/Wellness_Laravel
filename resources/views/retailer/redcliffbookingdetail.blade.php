@@ -3,10 +3,10 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
   :root {
-    --navy:#0f172a; --navy-2:#1e293b; --teal:#0d9488; --teal-l:#f0fdfa; --teal-m:#99f6e4;
-    --teal-d:#0f766e; --slate:#475569; --muted:#94a3b8; --border:#e2e8f0;
+    --navy:#0f172a; --navy-2:#1e293b; --teal:#2563eb; --teal-l:#eff6ff; --teal-m:#93c5fd;
+    --teal-d:#1d4ed8; --slate:#475569; --muted:#94a3b8; --border:#e2e8f0;
     --bg:#f8fafc; --white:#ffffff; --red:#ef4444; --red-l:#fef2f2;
-    --green:#16a34a; --green-l:#f0fdf4;
+    --green:#1d4ed8; --green-l:#eff6ff;
     --font:'Sora',sans-serif; --body:'DM Sans',sans-serif;
     --shadow:0 4px 16px rgba(15,23,42,.07),0 1px 4px rgba(15,23,42,.04);
   }
@@ -15,8 +15,8 @@
   /* HERO */
   .pkg-hero { background:#1f3964; padding:48px 60px 44px; position:relative; overflow:hidden; }
   .pkg-hero::before { content:''; position:absolute; inset:0; pointer-events:none;
-    background:radial-gradient(ellipse 55% 120% at 100% 50%,rgba(13,148,136,.18) 0%,transparent 65%),
-               radial-gradient(ellipse 30% 80% at 0% 0%,rgba(13,148,136,.08) 0%,transparent 55%); }
+    background:radial-gradient(ellipse 55% 120% at 100% 50%,rgba(37,99,235,.18) 0%,transparent 65%),
+               radial-gradient(ellipse 30% 80% at 0% 0%,rgba(147,197,253,.10) 0%,transparent 55%); }
   .pkg-hero::after { content:''; position:absolute; inset:0; pointer-events:none;
     background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
     background-size:32px 32px; }
@@ -24,8 +24,8 @@
   .back-link { display:inline-flex; align-items:center; gap:6px; font-family:var(--font); font-size:12.5px; font-weight:600; color:rgba(255,255,255,.5); text-decoration:none; margin-bottom:20px; transition:.2s; }
   .back-link svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2.3; stroke-linecap:round; stroke-linejoin:round; transition:.2s; }
   .back-link:hover { color:var(--teal-m); } .back-link:hover svg { transform:translateX(-3px); }
-  .hero-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(13,148,136,.18); border:1px solid rgba(13,148,136,.35); border-radius:50px; font-family:var(--font); font-size:11px; font-weight:700; color:var(--teal-m); letter-spacing:.8px; text-transform:uppercase; margin-bottom:16px; }
-  .hero-badge span { width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 2s infinite; }
+  .hero-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(37,99,235,.18); border:1px solid rgba(147,197,253,.35); border-radius:50px; font-family:var(--font); font-size:11px; font-weight:700; color:var(--teal-m); letter-spacing:.8px; text-transform:uppercase; margin-bottom:16px; }
+  .hero-badge span { width:6px; height:6px; border-radius:50%; background:#93c5fd; animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
   .pkg-hero h1 { font-family:var(--font); font-size:clamp(24px,3vw,38px); font-weight:800; color:var(--white); letter-spacing:-.8px; line-height:1.15; margin-bottom:12px; }
   .pkg-hero p { font-size:15px; color:rgba(255,255,255,.55); max-width:520px; }
@@ -53,7 +53,7 @@
   .form-group { display:flex; flex-direction:column; gap:5px; }
   .form-group label { font-family:var(--font); font-size:10.5px; font-weight:700; color:var(--slate); letter-spacing:.4px; text-transform:uppercase; }
   .form-group input, .form-group select, .form-group textarea { padding:10px 13px; border:1.5px solid var(--border); border-radius:10px; font-family:var(--body); font-size:14px; color:var(--navy); background:var(--bg); outline:none; transition:.2s; width:100%; }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--teal); box-shadow:0 0 0 4px rgba(13,148,136,.1); background:var(--white); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--teal); box-shadow:0 0 0 4px rgba(37,99,235,.1); background:var(--white); }
   .form-group input.err, .form-group select.err, .form-group textarea.err { border-color:var(--red); }
   .form-group input[readonly] { background:#f1f5f9; color:var(--muted); cursor:not-allowed; }
 
@@ -65,22 +65,21 @@
 
   .summary-card { background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; }
   .card-head { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-  .card-head.dark { background:var(--navy-2); border-bottom:1px solid rgba(255,255,255,.07); }
+  .card-head.dark { background:linear-gradient(135deg,#1e3a8a,#1d4ed8); border-bottom:1px solid rgba(255,255,255,.07); }
   .card-head-title { font-family:var(--font); font-size:14px; font-weight:700; color:var(--navy-2); }
   .card-head.dark .card-head-title { color:var(--white); }
-  .card-head-badge { font-family:var(--font); font-size:11px; font-weight:700; padding:3px 10px; border-radius:50px; background:var(--teal-l); color:var(--teal-d); border:1px solid #ccfbf1; }
+  .card-head-badge { font-family:var(--font); font-size:11px; font-weight:700; padding:3px 10px; border-radius:50px; background:var(--teal-l); color:var(--teal-d); border:1px solid var(--border); }
 
   .tests-list { padding:8px 0; max-height:240px; overflow-y:auto; }
   .tests-list::-webkit-scrollbar { width:4px; }
   .tests-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
 
-  /* ✅ FIXED: test item layout with price aligned right */
   .test-item { display:flex; align-items:center; gap:10px; padding:10px 20px; border-bottom:1px solid #f1f5f9; transition:.15s; }
   .test-item:last-child { border-bottom:none; }
   .test-item:hover { background:var(--teal-l); }
   .test-dot { width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0; }
   .test-name { font-size:13px; color:var(--slate); line-height:1.4; flex:1; }
-  .test-price { font-family:var(--font); font-weight:700; color:var(--teal-d); font-size:13px; white-space:nowrap; background:var(--teal-l); padding:3px 9px; border-radius:6px; border:1px solid #ccfbf1; }
+  .test-price { font-family:var(--font); font-weight:700; color:var(--teal-d); font-size:13px; white-space:nowrap; background:var(--teal-l); padding:3px 9px; border-radius:6px; border:1px solid var(--border); }
 
   .summary-row { display:flex; justify-content:space-between; align-items:center; padding:13px 22px; border-bottom:1px solid var(--border); font-size:14px; color:var(--slate); }
   .summary-row:last-child { border-bottom:none; }
@@ -88,8 +87,8 @@
   .summary-row.total { background:var(--bg); font-family:var(--font); font-weight:700; font-size:15px; color:var(--navy-2); }
   .summary-row.total .val { color:var(--teal-d); font-size:22px; }
 
-  .confirm-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:calc(100% - 40px); margin:18px 20px; padding:14px; background:linear-gradient(135deg,var(--teal-d),var(--teal)); color:var(--white); border:none; border-radius:12px; font-family:var(--font); font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(13,148,136,.3); transition:.2s; }
-  .confirm-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(13,148,136,.35); }
+  .confirm-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:calc(100% - 40px); margin:18px 20px; padding:14px; background:linear-gradient(135deg,var(--teal-d),var(--teal)); color:var(--white); border:none; border-radius:12px; font-family:var(--font); font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(37,99,235,.3); transition:.2s; }
+  .confirm-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,99,235,.35); }
 
   .trust-strip { padding:14px 20px 18px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
   .trust-item { display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--slate); font-weight:500; }
@@ -127,14 +126,13 @@
 
       <form id="bookingForm" method="POST" action="{{ route('retailer.red_cliffe_order_placed') }}">
         @csrf
-        {{-- ✅ Exact same hidden fields as original --}}
         <input type="hidden" name="customer_latitude"  value="{{ $latitude }}">
         <input type="hidden" name="customer_longitude" value="{{ $longitude }}">
         <input type="hidden" name="collection_slot_id" value="{{ $collection_slot_id }}">
 
         <div class="lr-grid">
 
-          <!-- ══ LEFT: Patient Forms ══ -->
+          <!-- LEFT: Patient Forms -->
           <div>
             <div class="section-label">Patients — <strong id="countLabel">1 added</strong></div>
             <div id="patientsWrap"></div>
@@ -143,7 +141,7 @@
             </button>
           </div>
 
-          <!-- ══ RIGHT: Tests + Price ══ -->
+          <!-- RIGHT: Tests + Price -->
           <div class="right-panel">
 
             @php
@@ -152,7 +150,7 @@
               $price = $redcliffcart_items->sum("price");
             @endphp
 
-            {{-- Packages Included --}}
+            <!-- Packages Included -->
             <div class="summary-card">
               <div class="card-head">
                 <div class="card-head-title"><i class="bi bi-clipboard2-pulse me-2" style="color:var(--teal)"></i>Packages included</div>
@@ -162,7 +160,6 @@
                 @forelse($packages as $item)
                   <div class="test-item">
                     <div class="test-dot"></div>
-                    {{-- ✅ FIXED: name takes flex:1, price has its own styled badge --}}
                     <span class="test-name">{{ $item->package->packagename }}</span>
                     <span class="test-price">₹{{ number_format($item->price) }}</span>
                   </div>
@@ -172,7 +169,7 @@
               </div>
             </div>
 
-            {{-- Price Summary --}}
+            <!-- Price Summary -->
             <div class="summary-card">
               <div class="card-head dark">
                 <div class="card-head-title">Price Summary</div>
@@ -192,8 +189,8 @@
               </div>
             </div>
 
-          </div><!-- /right-panel -->
-        </div><!-- /lr-grid -->
+          </div>
+        </div>
       </form>
 
     </div>
@@ -205,13 +202,11 @@
 <script>
 let count = 0;
 
-{{-- ✅ Exact same JS variables as original --}}
 const BOOKING_DATE    = "{{ date('Y-m-d') }}";
 const COLLECTION_DATE = "{{ $collection_date }}";
 const PINCODE         = "{{ $pincode }}";
-const BASE_PRICE      = {{ $price }}; // ✅ FIXED: BASE_PRICE defined so total amount calculates correctly
+const BASE_PRICE      = {{ $price }};
 
-{{-- ✅ Exact same addPatient function with same field names --}}
 function addPatient() {
   count++;
   const n = count;
@@ -296,7 +291,6 @@ function removePatient(n) {
   updateCount();
 }
 
-// ✅ FIXED: removed broken sumTests reference, total = BASE_PRICE * patient count
 function updateCount() {
   const n = document.querySelectorAll('.patient-card').length;
   document.getElementById('countLabel').textContent  = `${n} added`;
@@ -304,7 +298,6 @@ function updateCount() {
   document.getElementById('sumAmount').textContent   = '₹' + (BASE_PRICE * n).toLocaleString('en-IN');
 }
 
-{{-- ✅ Exact same validation as original --}}
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
   let ok = true;
   this.querySelectorAll('[required]').forEach(el => {
@@ -314,5 +307,5 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
   if (!ok) { e.preventDefault(); alert('Please fill all required fields for every patient.'); }
 });
 
-addPatient(); // Start with 1
+addPatient();
 </script>

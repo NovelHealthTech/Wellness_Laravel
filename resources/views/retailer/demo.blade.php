@@ -293,7 +293,7 @@ async function loadSlots(date){
     const data = await res.json();
     const slots = data.results || [];
     badge.textContent = slots.length ? `${slots.length} slots` : 'No slots';
-
+    
     if(!slots.length){
       grid.innerHTML = `<div class="empty-slots"><i class="bi bi-calendar-x"></i>No slots available for this date.</div>`;
       return;

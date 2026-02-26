@@ -19,18 +19,15 @@
             }
             .overlay_text h1{
                 font-size:1rem;
-
             }
             .overlay_text h5{
                 font-size:0.5rem;
-
             }
         }
 
         @media (max-width: 480px) {
             .overlay_text {
                 font-size: 1.5rem;
-                
             }
             .package_image{
                 height:86px!important;
@@ -50,10 +47,36 @@
         .image_subheading {
             font-weight: bold;
         }
+
         @media(max-width:960px){
             .add_image_icon{
                 display: none;
             }
+        }
+
+        /* ── Hover card effect ── */
+        .pkg-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+
+        .pkg-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(37, 99, 235, 0.13), 0 4px 12px rgba(15, 23, 42, 0.08);
+            border-color: #93c5fd;
+        }
+
+        .pkg-card:hover .image_subheading {
+            color: #1d4ed8;
+        }
+
+        .pkg-card img {
+            transition: transform 0.25s ease;
+        }
+
+        .pkg-card:hover img {
+            transform: scale(1.05);
         }
     </style>
 @endpush
@@ -72,32 +95,32 @@
     </div>
 
     <div class="card">
-        <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap ">
+        <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
 
-            <div class="card text-center p-3">
+            <a href="{{ route('loginview') }}" class="text-decoration-none card text-center p-3 pkg-card">
                 <img class="package_image" src="{{ asset('images/website/home/package1.png') }}" alt="Package 1">
-                <p class="py-3 image_subheading">Doc-ON-call</p>
-            </div>
+                <p class="py-3 image_subheading mb-0">Doc-ON-call</p>
+            </a>
 
             <span><img class="add_image_icon" src="{{ asset('images/website/home/add.png') }}" alt="Add"></span>
 
-            <div class="card text-center p-3">
+            <a href="{{ route('loginview') }}" class="card text-center text-decoration-none p-3 pkg-card">
                 <img class="package_image" src="{{ asset('images/website/home/package2.png') }}" alt="Package 2">
-                <p class="py-3 image_subheading">Surgical Assistance</p>
-            </div>
+                <p class="py-3 image_subheading mb-0">Surgical Assistance</p>
+            </a>
 
             <span><img class="add_image_icon" src="{{ asset('images/website/home/add.png') }}" alt="Add"></span>
 
-            <div class="card text-center p-3">
+            <a href="{{ route('loginview') }}" class="text-decoration-none card text-center p-3 pkg-card">
                 <img class="package_image" src="{{ asset('images/website/home/package3.png') }}" alt="Package 3">
-                <p class="py-3 image_subheading">Discounted Lab Tests</p>
-            </div>
+                <p class="py-3 image_subheading mb-0">Discounted Lab Tests</p>
+            </a>
 
             <span><img class="add_image_icon" src="{{ asset('images/website/home/add.png') }}" alt="Add"></span>
 
-            {{-- <div class="card text-center p-3">
+            {{-- <div class="card text-center p-3 pkg-card">
                 <img class="package_image" src="{{ asset('images/website/home/package4.png') }}" alt="Package 4">
-                <p class="py-3 image_subheading">E-Pharmacy</p>
+                <p class="py-3 image_subheading mb-0">E-Pharmacy</p>
             </div> --}}
         </div>
 
@@ -108,6 +131,5 @@
         </div>
 
     </div>
-    <!-- Package Icons Row -->
 
 </div>

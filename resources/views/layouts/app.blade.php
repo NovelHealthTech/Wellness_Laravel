@@ -10,11 +10,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
     </style>
-  
+    {{-- ✅ Address Bar / Browser Tab Icon (small) --}}
+    <link rel="icon" type="image/png" href="{{ asset('images/site_logo.png') }}" sizes="32x32">
+
+    {{-- ✅ Google Search Icon (large) --}}
+    <link rel="apple-touch-icon" href="{{ asset('images/site_logo.png') }}" sizes="192x192">
     <style>
         body {
             font-family: 'Poppins', 'sans-serif';
-            overflow-x:hidden;
+            overflow-x: hidden;
         }
 
         .inactive {
@@ -23,8 +27,9 @@
             font-size: 30px;
             font-weight: 400;
         }
-        .bluecolor{
-            color:#2E3964;
+
+        .bluecolor {
+            color: #2E3964;
         }
 
         .active {
@@ -57,13 +62,14 @@
         }
 
         p {
-            font-size:15px;
+            font-size: 15px;
             color: grey !important;
             margin-bottom: 0 !important;
-            
+
         }
-        li{
-            font-size:15px!important;
+
+        li {
+            font-size: 15px !important;
         }
 
         .bluegradient {
@@ -126,8 +132,6 @@
     </style>
 
     @stack("styles")
-
-    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -144,54 +148,32 @@
             </svg>
         </div>
     </div>
-
-
     <div class="">
         @yield('content')
     </div>
-
-
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- #region -->
-    {{-- <script>
+
+    <script>
         window.addEventListener("load", function () {
-            // Minimum loader display time in milliseconds
             const minTime = 1000;
             const loader = document.getElementById("page-loader");
 
-            // Calculate elapsed time since DOM started loading
             const startTime = performance.timing.navigationStart;
             const elapsed = Date.now() - startTime;
-
             const remainingTime = Math.max(minTime - elapsed, 0);
 
             setTimeout(() => {
                 loader.classList.add("hidden");
+
+                // 🔥 VERY IMPORTANT: refresh AOS *after* loader hides
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 300);
             }, remainingTime);
         });
-    </script> --}}
-
-
-    <script>
-window.addEventListener("load", function () {
-    const minTime = 1000;
-    const loader = document.getElementById("page-loader");
-
-    const startTime = performance.timing.navigationStart;
-    const elapsed = Date.now() - startTime;
-    const remainingTime = Math.max(minTime - elapsed, 0);
-
-    setTimeout(() => {
-        loader.classList.add("hidden");
-
-        // 🔥 VERY IMPORTANT: refresh AOS *after* loader hides
-        setTimeout(() => {
-            AOS.refresh();
-        }, 300);
-    }, remainingTime);
-});
-</script>
+    </script>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>

@@ -48,7 +48,7 @@ Route::post("/gettimeeslots", function (Request $request) {
         ->post("https://apiuat.agilus.in/api/IntegrationAPI/GetServiceableStatus", [
             "header" => [
                 "Token" => $token
-            ],
+            ],  
             "body" => [
                 "Pincode" => $pincode,
                 "Source" => $source

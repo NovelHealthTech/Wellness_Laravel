@@ -5,10 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Novel Healthtech</title>
-  <link rel="icon" type="image/png" href="{{ asset('images/retailer/novel_tech.png') }}">
+  <link rel="icon" type="image/png" href="{{ asset('images/site_logo.png') }}">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <style>
     *,
     *::before,
@@ -17,8 +18,6 @@
       margin: 0;
       padding: 0;
     }
-
-
 
     :root {
       --bg: #f5f6fa;
@@ -46,7 +45,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-
     }
 
     /* ── HEADER ──────────────────────────────────────── */
@@ -61,6 +59,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 28px;
+      gap: 16px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
       animation: fadeIn 0.4s ease both;
     }
@@ -87,54 +86,23 @@
     }
 
     .logo-icon {
-      width: 42px;
       height: 42px;
-      background: var(--accent);
-      border-radius: var(--radius);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: white;
     }
 
-    .logo-icon svg {
-      width: 22px;
-      height: 22px;
-      stroke: #fff;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1;
-    }
-
-    .logo-name {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.4px;
-    }
-
-    .logo-sub {
-      font-size: 10.5px;
-      font-weight: 500;
-      color: var(--sub);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin-top: 3px;
+    .logo-icon img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
     }
 
     /* ── SEARCH ──────────────────────────────────────── */
     .search-wrap {
       flex: 1;
       max-width: 340px;
-      margin: 0 28px;
       position: relative;
     }
 
@@ -187,6 +155,7 @@
       display: flex;
       align-items: center;
       gap: 2px;
+      flex-shrink: 0;
     }
 
     .sep {
@@ -322,12 +291,6 @@
       color: var(--text);
     }
 
-    .profile-tier {
-      font-size: 10.5px;
-      font-weight: 500;
-      color: var(--accent);
-    }
-
     .chevron {
       width: 13px;
       height: 13px;
@@ -377,6 +340,23 @@
       stroke-linejoin: round;
     }
 
+    /* ── SURAKSHA BADGE ──────────────────────────────── */
+    .suraksha-badge {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      padding-left: 16px;
+      margin-left: 8px;
+    }
+
+    .suraksha-badge img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.9;
+    }
+
     /* ── TOOLTIP ─────────────────────────────────────── */
     [data-tip] {
       position: relative;
@@ -416,6 +396,10 @@
       .profile-info {
         display: none;
       }
+
+      .suraksha-badge {
+        display: none;
+      }
     }
 
     @media (max-width: 640px) {
@@ -436,7 +420,7 @@
       }
     }
 
-    /* ======= Full Screen Blur Background ======= */
+    /* ── PAGE LOADER ─────────────────────────────────── */
     #pageLoader {
       position: fixed;
       inset: 0;
@@ -450,13 +434,11 @@
       transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
-    /* Hide class */
     #pageLoader.hidden {
       opacity: 0;
       visibility: hidden;
     }
 
-    /* ======= Your Loader Animation ======= */
     .loader {
       width: 70px;
       aspect-ratio: 1;
@@ -487,7 +469,6 @@
       }
     }
 
-    /* ===== Sticky Header ===== */
     /* ── HERO BANNER ─────────────────────────────────── */
     .appt-hero {
       width: 100%;
@@ -525,57 +506,14 @@
       z-index: 1;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 14px;
-      background: rgba(13, 148, 136, 0.18);
-      border: 1px solid rgba(13, 148, 136, 0.35);
-      border-radius: 50px;
-      font-family: var(--font);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--teal-m);
-      letter-spacing: 0.9px;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .hero-badge .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--teal);
-      animation: blink 2s infinite;
-    }
-
-    @keyframes blink {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.5;
-        transform: scale(1.3);
-      }
-    }
-
     .appt-hero h1 {
       font-family: var(--font);
       font-size: clamp(26px, 3vw, 38px);
       font-weight: 800;
-      color: var(--white);
+      color: #fff;
       letter-spacing: -0.8px;
       line-height: 1.15;
       margin-bottom: 10px;
-    }
-
-    .appt-hero h1 span {
-      color: var(--teal-m);
     }
 
     .appt-hero p {
@@ -589,35 +527,26 @@
       cursor: pointer;
     }
   </style>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<script>
-    window.addEventListener('pageshow', function(e) {
-        if (e.persisted) {
-            window.location.reload();
-        }
+  <script>
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) { window.location.reload(); }
     });
-</script>
+  </script>
 </head>
 
 <body>
 
-  <header>
+  <header class="py-2">
 
     <!-- LOGO -->
     <a class="logo" href="{{ route('retailer.retailerhomepage') }}">
       <div class="logo-icon">
-        N
-        {{-- <img class="image_logo" src="{{ asset('images/retailer/nc.jpg') }}" /> --}}
+        <img src="{{ asset('images/Dark Logo.png') }}" alt="Novel Healthtech Logo" />
       </div>
-      <a class="text-decoration-none d-flex flex-column" href="{{route('retailer.retailerhomepage')}}"
-        class="logo-text">
-        <span class="logo-name">Novel Healthtech</span>
-        <span class="logo-sub">Package Marketplace</span>
-      </a>
     </a>
 
     <!-- SEARCH -->
-     <div class="search-wrap">
+    <div class="search-wrap">
       <span class="search-icon">
         <svg viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" />
@@ -625,7 +554,7 @@
         </svg>
       </span>
       <input type="text" placeholder="Search packages, deals…" />
-    </div> 
+    </div>
 
     <!-- NAV -->
     <nav class="nav">
@@ -640,14 +569,14 @@
         <div class="badge">3</div>
       </button> --}}
 
-      <button class="icon-btn orders" data-tip="Orders">
+      <a href="{{ route('retailer.orders') }}" class="icon-btn text-decoration-none orders" data-tip="Orders">
         <svg viewBox="0 0 24 24">
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
           <rect x="9" y="3" width="6" height="4" rx="1" />
           <path d="M9 12h6M9 16h4" />
         </svg>
         <span>Orders</span>
-      </button>
+      </a>
 
       {{-- <button class="icon-btn wishlist" data-tip="Wishlist">
         <svg viewBox="0 0 24 24">
@@ -684,7 +613,6 @@
         <div class="avatar">JD</div>
         <div class="profile-info">
           <span class="profile-name">John Doe</span>
-         
         </div>
         <svg class="chevron" viewBox="0 0 24 24">
           <polyline points="6 9 12 15 18 9" />
@@ -702,12 +630,20 @@
       </a>
 
     </nav>
+  
+    <!-- Suraksha Badge -->
+    <div class="suraksha-badge">
+      <img src="{{ asset('images/suraksha.png') }}" alt="Suraksha Certified" />
+    </div>
+
   </header>
-  <!-- ======= Page Loader ======= -->
+  
+  
+  <!-- Page Loader -->
   <div id="pageLoader">
     <div class="loader"></div>
   </div>
- 
+
 </body>
 
 </html>

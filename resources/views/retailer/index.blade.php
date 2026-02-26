@@ -157,7 +157,7 @@
                         <div class="carousel-caption">
                             <h3 class="fw-bold">Consult Certified Doctors Online</h3>
                             <p>24/7 video consultations with trusted specialists.</p>
-                            <a href="#" class="btn btn-primary">Book Now</a>
+                            <a href="{{ route('retailer.doc_on_call') }}" class="btn btn-primary">Book Now</a>
                         </div>
                     </div>
 
@@ -166,7 +166,7 @@
                         <div class="carousel-caption">
                             <h3 class="fw-bold">Order Medicines Easily</h3>
                             <p>Upload prescription & get medicines delivered at home.</p>
-                            <a href="#" class="btn btn-primary">Shop Now</a>
+                            <a href="{{ route('retailer.epharmacy') }}" class="btn btn-primary">Shop Now</a>
                         </div>
                     </div>
                     <div class="carousel-item">
@@ -174,7 +174,7 @@
                         <div class="carousel-caption">
                             <h3 class="fw-bold">Book Lab Tests Instantly</h3>
                             <p>Home sample collection & fast digital reports.</p>
-                            <a href="#" class="btn btn-primary">Book Test</a>
+                            <a href="{{ route('retailer.allpackages') }}" class="btn btn-primary">Book Test</a>
                         </div>
                     </div>
 
@@ -310,6 +310,14 @@
     </section>
 
 </div>
+ 
+@isset($redcliffcartitems)
+  <x-retailer.recliffcart :redcliffcartitems="$redcliffcartitems" />
+@endisset
+
+@isset($srlcartitems)
+  <x-retailer.srlcart :srlcartitems="$srlcartitems" />
+@endisset
 
 <x-retailer.footer />
 
@@ -327,5 +335,10 @@
             serviceRow.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     }
+    history.pushState(null, null, location.href);
 
+  window.addEventListener('popstate', function () {
+    // Change this route to wherever you want the back button to go
+    window.location.href = "{{ route('home') }}";
+  });
 </script>

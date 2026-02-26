@@ -966,3 +966,12 @@
         }
     });
 </script>
+<script>
+  // Push a state so the back button is interceptable
+  history.pushState(null, null, location.href);
+
+  window.addEventListener('popstate', function () {
+    // Change this route to wherever you want the back button to go
+    window.location.href = "{{ route('retailer.allpackages') }}";
+  });
+</script>

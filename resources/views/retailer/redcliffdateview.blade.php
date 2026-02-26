@@ -4,23 +4,23 @@
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
   :root {
-    --navy:#0f172a; --teal:#0d9488; --teal-l:#f0fdfa; --teal-m:#99f6e4;
-    --teal-d:#0f766e; --slate:#475569; --muted:#94a3b8; --border:#e2e8f0;
+    --navy:#0f172a; --teal:#2563eb; --teal-l:#eff6ff; --teal-m:#93c5fd;
+    --teal-d:#1d4ed8; --slate:#475569; --muted:#94a3b8; --border:#e2e8f0;
     --bg:#f8fafc; --white:#ffffff;
     --font:'Sora',sans-serif; --body:'DM Sans',sans-serif;
     --shadow:0 4px 16px rgba(15,23,42,.07),0 1px 4px rgba(15,23,42,.04);
   }
   body { background:var(--bg)!important; font-family:var(--body); color:var(--navy); }
 
-  /* ── HERO (same as packages page) ── */
+  /* ── HERO ── */
   .pkg-hero {
     background:#1f3964; padding:48px 60px 44px;
     position:relative; overflow:hidden;
   }
   .pkg-hero::before {
     content:''; position:absolute; inset:0;
-    background:radial-gradient(ellipse 55% 120% at 100% 50%,rgba(13,148,136,.18) 0%,transparent 65%),
-               radial-gradient(ellipse 30% 80% at 0% 0%,rgba(13,148,136,.08) 0%,transparent 55%);
+    background:radial-gradient(ellipse 55% 120% at 100% 50%,rgba(37,99,235,.18) 0%,transparent 65%),
+               radial-gradient(ellipse 30% 80% at 0% 0%,rgba(147,197,253,.10) 0%,transparent 55%);
     pointer-events:none;
   }
   .pkg-hero::after {
@@ -40,11 +40,11 @@
   .back-link:hover svg { transform:translateX(-3px); }
   .hero-badge {
     display:inline-flex; align-items:center; gap:6px;
-    padding:5px 12px; background:rgba(13,148,136,.18); border:1px solid rgba(13,148,136,.35);
+    padding:5px 12px; background:rgba(37,99,235,.18); border:1px solid rgba(147,197,253,.35);
     border-radius:50px; font-family:var(--font); font-size:11px; font-weight:700;
     color:var(--teal-m); letter-spacing:.8px; text-transform:uppercase; margin-bottom:16px;
   }
-  .hero-badge span { width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 2s infinite; }
+  .hero-badge span { width:6px; height:6px; border-radius:50%; background:#93c5fd; animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
   .pkg-hero h1 { font-family:var(--font); font-size:clamp(24px,3vw,38px); font-weight:800; color:var(--white); letter-spacing:-.8px; line-height:1.15; margin-bottom:12px; }
   .pkg-hero p { font-size:15px; color:rgba(255,255,255,.55); max-width:520px; }
@@ -90,8 +90,8 @@
     padding:12px 10px; text-align:center; cursor:pointer; transition:.25s;
     background:var(--bg); user-select:none;
   }
-  .date-card:hover { border-color:var(--teal); transform:translateY(-3px); box-shadow:0 6px 18px rgba(13,148,136,.12); }
-  .date-card.selected { background:linear-gradient(135deg,var(--teal-d),var(--teal)); border-color:var(--teal); box-shadow:0 6px 20px rgba(13,148,136,.3); }
+  .date-card:hover { border-color:var(--teal); transform:translateY(-3px); box-shadow:0 6px 18px rgba(37,99,235,.12); }
+  .date-card.selected { background:linear-gradient(135deg, #14276a, #0044d9); border-color:var(--teal); box-shadow:0 6px 20px rgba(37,99,235,.3); }
   .date-card.selected .dc-num, .date-card.selected .dc-day { color:var(--white)!important; }
   .dc-label { font-family:var(--font); font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
   .dc-num { font-family:var(--font); font-size:22px; font-weight:800; color:var(--navy); }
@@ -99,7 +99,7 @@
 
   .info-pill {
     display:inline-flex; align-items:center; gap:6px; margin-top:16px;
-    background:var(--teal-l); border:1px solid #ccfbf1; color:var(--teal-d);
+    background:var(--teal-l); border:1px solid var(--border); color:var(--teal-d);
     padding:7px 14px; border-radius:50px; font-size:13px; font-weight:500;
   }
 
@@ -113,7 +113,7 @@
 
   .slots-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
   .slots-header h2 { font-family:var(--font); font-size:15px; font-weight:700; color:var(--navy); margin:0; }
-  .slots-badge { font-family:var(--font); font-size:11px; font-weight:700; padding:4px 12px; border-radius:50px; background:var(--teal-l); color:var(--teal-d); border:1px solid #ccfbf1; }
+  .slots-badge { font-family:var(--font); font-size:11px; font-weight:700; padding:4px 12px; border-radius:50px; background:var(--teal-l); color:var(--teal-d); border:1px solid var(--border); }
 
   #slotsGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
 
@@ -123,7 +123,7 @@
     color:var(--slate); cursor:pointer; text-align:center; transition:.2s; line-height:1.4;
   }
   .slot-btn:hover { border-color:var(--teal); color:var(--teal-d); background:var(--teal-l); }
-  .slot-btn.active { background:var(--teal); border-color:var(--teal); color:var(--white); box-shadow:0 4px 12px rgba(13,148,136,.3); }
+  .slot-btn.active { background:var(--teal); border-color:var(--teal); color:var(--white); box-shadow:0 4px 12px rgba(37,99,235,.3); }
   .slot-btn.full { border-color:#fca5a5; color:#dc2626; background:#fef2f2; cursor:not-allowed; }
 
   .empty-slots { text-align:center; padding:40px 20px; color:var(--muted); }
@@ -145,9 +145,9 @@
     padding:12px 28px; border:none; border-radius:50px;
     background:linear-gradient(135deg,var(--teal-d),var(--teal));
     color:var(--white); font-family:var(--font); font-size:13px; font-weight:700;
-    cursor:pointer; transition:.2s; box-shadow:0 4px 14px rgba(13,148,136,.3);
+    cursor:pointer; transition:.2s; box-shadow:0 4px 14px rgba(37,99,235,.3);
   }
-  .confirm-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(13,148,136,.35); }
+  .confirm-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,99,235,.35); }
   .confirm-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
 
   @media(max-width:768px) {
@@ -212,11 +212,11 @@
       <!-- Confirm Footer -->
       <form id="slotForm" action="{{ route('retailer.redclifftimeslotsubmit') }}" method="POST">
         @csrf
-        <input type="hidden" name="redcliffdate"     id="hiddenDate">
-        <input type="hidden" name="redcliffslot"     id="hiddenSlot">
-        <input type="hidden" name="latitude"          value="{{ $latitude }}">
-        <input type="hidden" name="longitude"         value="{{ $longitude }}">
-        <input type="hidden" name="redcliffpincode"   value="{{ $pincode }}">
+        <input type="hidden" name="redcliffdate"   id="hiddenDate">
+        <input type="hidden" name="redcliffslot"   id="hiddenSlot">
+        <input type="hidden" name="latitude"        value="{{ $latitude }}">
+        <input type="hidden" name="longitude"       value="{{ $longitude }}">
+        <input type="hidden" name="redcliffpincode" value="{{ $pincode }}">
 
         <div class="confirm-footer" id="confirmFooter" style="display:none;">
           <div class="confirm-info">
@@ -245,7 +245,6 @@ const CSRF   = document.querySelector('meta[name="csrf-token"]').content;
 
 let selectedDate = '', selectedSlotId = '', selectedSlotLabel = '';
 
-// Build date cards
 (function buildDates(){
   const row = document.getElementById('datesRow');
   const today = new Date();
@@ -260,7 +259,6 @@ let selectedDate = '', selectedSlotId = '', selectedSlotLabel = '';
     </div>`;
   }
   row.innerHTML = html;
-  // Auto-select first card
   pickDate(row.firstElementChild, row.firstElementChild.dataset.date);
 })();
 
@@ -279,7 +277,7 @@ async function pickDate(el, date){
 }
 
 async function loadSlots(date){
-  const grid = document.getElementById('slotsGrid');
+  const grid  = document.getElementById('slotsGrid');
   const badge = document.getElementById('slotCountBadge');
   grid.innerHTML = `<div class="loader-wrap"><div class="spinner-border" role="status"></div><span>Fetching slots…</span></div>`;
   badge.textContent = 'Loading…';
