@@ -34,28 +34,7 @@ Route::post("/Servicable_status", function (Request $request) {
 });
 Route::post("/gettimeeslots", function (Request $request) {
 
-
-    $key = "4DEF92694DC6B2D0CD5635BBB1781916";
-    $pincode = $request->Pincode;
-    $source = "HK";
-
-    // Generate Token
-    $data = $key . "|" . $pincode . "|AGILUS";
-    $token = hash('sha256', $data);
-
-    // Call Agilus API
-    $response = Http::withOptions(['verify' => false])
-        ->post("https://apiuat.agilus.in/api/IntegrationAPI/GetServiceableStatus", [
-            "header" => [
-                "Token" => $token
-            ],  
-            "body" => [
-                "Pincode" => $pincode,
-                "Source" => $source
-            ]
-        ]);
-
-    return response()->json($response->json());
+   
 
 
 });

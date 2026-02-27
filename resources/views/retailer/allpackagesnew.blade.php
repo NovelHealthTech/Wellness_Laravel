@@ -773,7 +773,7 @@
   <x-retailer.srlcart :srlcartitems="$srlcartitems" />
 @endisset
 
-<x-retailer.modal title="Please Enter your pincode" link="{{ route('retailer.checkavailability') }}" />
+{{-- <x-retailer.modal title="Please Enter your pincode" link="{{ route('retailer.checkavailability') }}" /> --}}
 <x-retailer.footer />
 
 <script>

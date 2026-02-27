@@ -46,12 +46,9 @@ class RetailerController extends Controller
         try {
 
             $allpackages = Newpackage::all();
-
-            $srlcartitems = Srlcart::where("user_id",auth()->user()->id);
-            $redcliffcartitems = Redcliffcart::where("user_id",auth()->user()->id);
-
+            $srlcartitems = Srlcart::where("user_id", auth()->user()->id);
+            $redcliffcartitems = Redcliffcart::where("user_id", auth()->user()->id);
             $vendors = Vendor::all();
-
 
 
             $srlpackageIds = $srlcartitems->pluck('package_id')->toArray();
@@ -1519,11 +1516,9 @@ class RetailerController extends Controller
 
         // ── Redirect with flash message ───────────────────────────
         if ($response->json('result.status') === 1) {
-
             return redirect()->route('retailer.retailerhomepage')
                 ->with(["success" => true, "message" => "Your form submitted successfully"]);
         }
-
         return redirect()->route('retailer.retailerhomepage')
             ->with('error', 'Something Went Wrong! Please Try Again');
     }
@@ -1635,7 +1630,7 @@ class RetailerController extends Controller
     {
 
         try {
-            $Redcliffexist = Redcliffcart::where("user_id",auth()->user()->id)->where("package_id",$request->id)->first();
+            $Redcliffexist = Redcliffcart::where("user_id", auth()->user()->id)->where("package_id", $request->id)->first();
             if ($Redcliffexist) {
                 Redcliffcart::where("user_id", auth()->user()->id)->where("package_id", $request->id)->delete();
 
@@ -1658,6 +1653,36 @@ class RetailerController extends Controller
 
 
     }
+    public function check_redcliff_availability(Request $request)
+{
+    $query = $request->locality ?? $request->city;
+
+    $url = 'https://api.redcliffelabs.com/api/partner/v2/get-partner-location-2-eloc/?place_query=' . urlencode($query);
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL            => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER     => [
+            'key: pW2woxd83m29ihJUlIRM9oxKnylbPt4a',
+            'Accept: application/json',
+        ],
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+
+    dd($data);
+
+    if (isset($data['status']) && $data['status'] === 'Success' && !empty($data['data'])) {
+        return response()->json(['available' => true, 'locations' => $data['data']]);
+    }
+
+    return response()->json(['available' => false, 'message' => 'Home collection is not available in this area.']);
+}
+
 }
 
 

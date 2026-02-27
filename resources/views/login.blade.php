@@ -328,16 +328,22 @@
                             <label>Email Address</label>
                             <div class="input-wrap">
                                 <span class="input-prefix"><i class="fa fa-envelope-o"></i></span>
-                                <input type="email" name="email" id="email" placeholder="you@example.com" required>
+                                <input type="email" name="loginemail" id="email" placeholder="you@example.com" required>
                             </div>
+                            @error("loginemail")
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="field">
                             <label>Password</label>
                             <div class="input-wrap">
                                 <span class="input-prefix"><i class="fa fa-key"></i></span>
-                                <input type="password" name="password" id="txtPasswordLogin" placeholder="Your password" autocomplete="off" required>
+                                <input type="password" name="loginpassword" id="txtPasswordLogin" placeholder="Your password" autocomplete="off" required>
                                 <span class="input-eye" id="toggle_login_pwd"><i class="fa fa-eye"></i></span>
                             </div>
+                            @error("loginpassword")
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="forgot-link"><a href="#">Forgot password?</a></div>
                         
@@ -499,7 +505,8 @@
             f.attr("type", f.attr("type") === "password" ? "text" : "password");
             $(this).find("i").toggleClass("fa-eye fa-eye-slash");
         });
-        $("#toggle_pwd").click(function () {
+        $("#toggle_pwd").click(function () 
+        {
             const f = $("#txtPassword");
             f.attr("type", f.attr("type") === "password" ? "text" : "password");
             $(this).find("i").toggleClass("fa-eye fa-eye-slash");
@@ -519,6 +526,7 @@
             }
         });
 
+
         // ── SweetAlert for session messages ──
         @if(session('status') == 'failure')
             Swal.fire({
@@ -529,9 +537,9 @@
         @endif
 
         // ── If validation errors exist, auto-open signup tab ──
-        @if($errors->any())
-            switchTab('signup');
-        @endif
+        // @if($errors->any())
+        //     switchTab('signup');
+        // @endif
     </script>
 <script>
   // Push a state so the back button is interceptable

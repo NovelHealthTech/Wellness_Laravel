@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Container\Attributes\Auth as AttributesAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 
@@ -13,37 +15,43 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
+
+   
         $credentials = [
-            "email" => $request->email,
-            "password" => $request->password,
+            "loginemail" => $request->email,
+            "loginpassword" => $request->password,
         ];
 
+        $user = User::where("email", $request->loginemail)->first();
+       
+        if ($user) {
+             
+            if (Hash::check($request->loginpassword, $user->password)) {
+               
+                Auth::login($user); 
+ 
+                if ($user->roles == "2") {
+                    
+                    return redirect()->route('retailer.retailerhomepage');
 
-        if (Auth::attempt($credentials)) {
+                }
 
-            $user = Auth::user();
-    
-            if ($user->roles == 1) {
-
-                return redirect()->route("admindashboard");
-
+                if ($user->roles == "1") {
+                  
+                    return redirect()->route('admindashboard');
+                }
+              
+            } else {
+               
+                return back()->withErrors(["loginpassword" => "password not matched"])->withInput();
             }
-
-            if ($user->roles == 2 && $user->is_loggedin==1) {
-
-                return redirect()->route("retailer.retailerhomepage");
-
-            }
-
-            return redirect()->route("admindashboard");
-
-        } else {
-            return back()->with(["failure" => "Invalid Credentials"]);
         }
-
-
-
+        else{
+           
+            return back()->withErrors(["loginemail"=>"email not found"])->withInput();
+        }
     }
+
 
     public function signupview(Request $request)
     {
@@ -53,7 +61,6 @@ class LoginController extends Controller
     }
     public function signup(Request $request)
     {
-
         try {
 
             $validated = $request->validate([
@@ -69,7 +76,7 @@ class LoginController extends Controller
                 'pincode' => 'required|digits:6',
                 "gender" => "required",
             ]);
-            
+
 
             $validated["is_loggedin"] = 0;
             $validated["roles"] = 2;
@@ -100,13 +107,10 @@ class LoginController extends Controller
                     $email = $request->email;
 
                     return view("vetifyotpview", compact("number", "email"));
-
                 }
-
             }
 
         } catch (Exception $e) {
-
 
             return back()->with(["status" => "failure", "message" => "Something went wrong pls try again...!!!"]);
 

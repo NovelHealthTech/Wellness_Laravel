@@ -74,7 +74,7 @@ Route::get("/terms_and_condition", function () {
 
 Route::get("/loginview", function () {
     return view('login');
-       
+
 })->name('loginview');
 Route::post("/login", [LoginController::class, "login"])->name('login.post');
 Route::get("/signupview", [LoginController::class, "signupview"])->name("signupview");
@@ -168,13 +168,18 @@ Route::middleware(['check.auth'])->group(function () {
 
         //this is for the  orders
 
-        Route::get("/orders" ,[RetailerController::class, "orders"])->name('orders');
+        Route::get("/orders", [RetailerController::class, "orders"])->name('orders');
 
-        Route::get("/vieworder/{id}",[RetailerController::class,"vieworder"])->name('vieworder');
+        Route::get("/vieworder/{id}", [RetailerController::class, "vieworder"])->name('vieworder');
 
 
         //for  package deletion
-        Route::post("/deletepackage",[RetailerController::class, "deletepackage"])->name('deletepackage');
+        Route::post("/deletepackage", [RetailerController::class, "deletepackage"])->name('deletepackage');
+
+        //for checking the availabiolty
+
+        Route::post("/redcliff_check_availabiity", [RetailerController::class, "redcliff_check_availabiity"])->name('redcliff_check_availabiity');
+
 
     });
 
@@ -182,7 +187,7 @@ Route::middleware(['check.auth'])->group(function () {
     Route::get("/surgical_assitance", [RetailerController::class, "surgical_view"])->name('retailer.surgical_assistance');
     Route::post("/sugical_assistance_submit", [RetailerController::class, "surgical_assistance_form"])->name("retailer.surgical_assistance_form_submit");
 
-    Route::post("/checkavailability", [RetailerController::class, "checkavailability"])->name("retailer.checkavailability");
+    Route::post("/checkavailability", [RetailerController::class, "check_redcliff_availability"])->name("retailer.check_redcliff_availability");
 });
 
 Route::get("/invoice_generation", [InvoiceController::class, "generate"])->name('invoice');

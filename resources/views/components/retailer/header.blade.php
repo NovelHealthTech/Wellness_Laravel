@@ -546,7 +546,7 @@
     </a>
 
     <!-- SEARCH -->
-    <div class="search-wrap">
+    <div class="search-wrap" style="visibility:hidden">
       <span class="search-icon">
         <svg viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" />
