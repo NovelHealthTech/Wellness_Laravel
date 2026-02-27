@@ -135,10 +135,12 @@
           <!-- LEFT: Patient Forms -->
           <div>
             <div class="section-label">Customers — <strong id="countLabel">1 added</strong></div>
-            <div id="patientsWrap"></div>
+
             <button type="button" class="add-btn" onclick="addPatient()">
               <i class="bi bi-plus-circle-fill"></i> Add Another Customer
             </button>
+
+            <div id="patientsWrap" style="margin-top:20px;"></div>
           </div>
 
           <!-- RIGHT: Tests + Price -->
