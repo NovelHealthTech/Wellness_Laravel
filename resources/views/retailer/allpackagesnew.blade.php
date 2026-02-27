@@ -713,7 +713,7 @@
 
             <ul class="test-features" id="tl-{{ $package->id }}">
               @foreach($tests as $idx => $test)
-                <li class="{{ $idx >= 5 ? 'extra' : '' }}">
+                <li class="{{ $idx >= 3 ? 'extra' : '' }}">
                   <span class="chk"><i class="bi bi-check2"></i></span>
                   {{ $test }}
                 </li>
@@ -726,9 +726,9 @@
 
             <div class="card-foot">
               @if($total > 5)
-                <button class="toggle-btn" onclick="toggleTests({{ $package->id }}, this)">
+                <button class="toggle-btn" >
                   <span>+{{ $total - 5 }} more</span>
-                  <svg viewBox="0 0 24 24">
+                  
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </button>
@@ -831,14 +831,14 @@
     }
   }
 
-  window.toggleTests = function (id, btn) {
-    const extras = document.querySelectorAll(`#tl-${id} .extra`);
-    const isOpen = btn.classList.contains('open');
-    const total = document.querySelectorAll(`#tl-${id} li`).length;
-    extras.forEach(li => li.classList.toggle('show', !isOpen));
-    btn.classList.toggle('open', !isOpen);
-    btn.querySelector('span').textContent = isOpen ? `+${total - 5} more` : 'Show less';
-  }
+  // window.toggleTests = function (id, btn) {
+  //   const extras = document.querySelectorAll(`#tl-${id} .extra`);
+  //   const isOpen = btn.classList.contains('open');
+  //   const total = document.querySelectorAll(`#tl-${id} li`).length;
+  //   extras.forEach(li => li.classList.toggle('show', !isOpen));
+  //   btn.classList.toggle('open', !isOpen);
+  //   btn.querySelector('span').textContent = isOpen ? `+${total - 5} more` : 'Show less';
+  // }
 
   function open_pin_code_modal(element) {
     $(".retailermodal").modal("show");
