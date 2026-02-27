@@ -45,7 +45,7 @@ class RetailerController extends Controller
 
         try {
 
-            $allpackages = Newpackage::all();
+            $allpackages = Newpackage::where("status",1)->get();
             $srlcartitems = Srlcart::where("user_id", auth()->user()->id);
             $redcliffcartitems = Redcliffcart::where("user_id", auth()->user()->id);
             $vendors = Vendor::all();
