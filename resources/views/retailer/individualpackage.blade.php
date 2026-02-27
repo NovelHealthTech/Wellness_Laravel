@@ -578,10 +578,10 @@
           <div class="hstat-label">Collection</div>
           <div class="hstat-value">Home / Centre</div>
         </div>
-        <div class="hstat">
+        {{-- <div class="hstat">
           <div class="hstat-label">Status</div>
           <div class="hstat-value teal">Available</div>
-        </div>
+        </div> --}}
       </div>
 
     </div>
@@ -878,7 +878,7 @@
           const badge = document.querySelector('.cart_badge_redcliff');
           if (badge) badge.innerText = count;
           if (typeof successalert === 'function') successalert(data);
-          setTimeout(() => { window.location.href = "{{ route('retailer.allpackages') }}"; }, 1000);
+          setTimeout(() => { window.location.href = "{{ route('retailer.redcliffcartview') }}"; }, 1000);
         }
         else if (res.ok && data.status === 'success' && data.vendor === 'srl') {
           const count = data.srlcartitems.length;

@@ -696,7 +696,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       
+
                                         @foreach($redcliffcartitems as $item)
                                             @php
                                                 $desc = json_decode($item->package->description ?? '{}');
@@ -730,7 +730,12 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
+
                                 </table>
+                                <a href="{{ route('retailer.allpackages') }}"
+                                    class="btn btn-outline-primary ms-3 mt-3 px-4 rounded-pill fw-semibold">
+                                    + Add More Packages
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -944,7 +949,7 @@
                 </div>
             </div>
         `);
-                }); 
+                });
             } else {
                 $("#succesmodalbody").html(`
         <div class="text-center py-5">
@@ -968,11 +973,11 @@
     });
 </script>
 <script>
-  // Push a state so the back button is interceptable
-  history.pushState(null, null, location.href);
+    // Push a state so the back button is interceptable
+    history.pushState(null, null, location.href);
 
-  window.addEventListener('popstate', function () {
-    // Change this route to wherever you want the back button to go
-    window.location.href = "{{ route('retailer.allpackages') }}";
-  });
+    window.addEventListener('popstate', function () {
+        // Change this route to wherever you want the back button to go
+        window.location.href = "{{ route('retailer.allpackages') }}";
+    });
 </script>
