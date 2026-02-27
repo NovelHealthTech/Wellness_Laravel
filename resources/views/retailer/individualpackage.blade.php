@@ -1,5 +1,4 @@
 <x-retailer.header />
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
