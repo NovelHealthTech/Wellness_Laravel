@@ -179,7 +179,7 @@
               <div class="summary-row total"><span>Total Amount</span><span class="val" id="sumAmount">₹{{ number_format($price) }}</span></div>
 
               <button type="submit" class="confirm-btn">
-                <i class="bi bi-check-circle-fill"></i> Confirm Booking
+                <i class="bi bi-check-circle-fill"></i> Proceed to pay
               </button>
 
               <div class="trust-strip">
